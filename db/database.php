@@ -2,7 +2,8 @@
 /**
  * @remark Mettre le bon chemin d'accès à votre fichier contenant les constantes
  */
-require_once "../config/conparam.php";
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/projet/config/conparam.php';
 
 /**
  * @brief	Helper class encapsulating the PDO object
