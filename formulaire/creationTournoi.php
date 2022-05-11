@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'date')) {
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
-        if ($date === false || strlen($date) == 0)
+        if ($date === false || $date > date("D:M:Y"))
             $bValid = false;
     } else {
         $bValid = false;
@@ -89,7 +89,7 @@ if (isset($_POST['submit'])) {
 
 
 function addTournoi($name, $maxPlayer, $minPlayer, $price, $jeux, $date){
-    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:ma,:mi,:p,:d,:j)";
+    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:ma,:mi,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ))";
     $statement = EDatabase::prepare($sql,array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	try {
 		$statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":p" => $price, ":j" => $jeux, ":d" => $date));
