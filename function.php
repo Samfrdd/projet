@@ -31,3 +31,27 @@ function getAllTournoi(){
 
 
 $allTournoi = getAllTournoi();
+
+function getAJeux($id)
+{
+    $arr = array();
+
+    $sql = "SELECT `jeux`.`IdJeux`,`jeux`.`Nom`FROM `projet`.`jeux` WHERE IdJeux = :i";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":i" => $id));
+    } catch (PDOException $e) {
+        return false;
+    }
+    // On parcoure les enregistrements 
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
+        // On crée l'objet EClient en l'initialisant avec les données provenant
+        // de la base de données
+        $c = new EJeux(intval($row['IdJeux']), $row['Nom']);
+        // On place l'objet EClient créé dans le tableau
+        array_push($arr, $c);
+    }
+
+    // Done
+    return $arr;
+}

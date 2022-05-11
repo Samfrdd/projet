@@ -8,6 +8,8 @@ detail : Formulaire de creation d'un tournoi
 session_start();
 require_once '../db/database.php';
 require_once '../Classes/tournoi.php';
+require_once '../Classes/jeux.php';
+
 
 
 $name = "";
@@ -73,33 +75,62 @@ if (isset($_POST['submit'])) {
             $bValid = false;
     } else {
         $bValid = false;
-    } 
+    }
 
     // Est-ce qu'on a rencontré une erreur?
     if ($bValid && verifyTournoiExist($name) == true) {
-       // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-        if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)){
+        // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
+        if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)) {
             echo "asda";
+        }else{
+            header("Location: ../index.php");
+            exit;
         }
-           
     } else {
         echo 'Ce nom de tournoi existe deja';
     }
 }
 
 
-function addTournoi($name, $maxPlayer, $minPlayer, $price, $jeux, $date){
+function getJeux()
+{
+    $arr = array();
+
+    $sql = "SELECT `jeux`.`IdJeux`,`jeux`.`Nom`FROM `projet`.`jeux`";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array());
+    } catch (PDOException $e) {
+        return false;
+    }
+    // On parcoure les enregistrements 
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
+        // On crée l'objet EClient en l'initialisant avec les données provenant
+        // de la base de données
+        $c = new EJeux(intval($row['IdJeux']), $row['Nom']);
+        // On place l'objet EClient créé dans le tableau
+        array_push($arr, $c);
+    }
+
+    // Done
+    return $arr;
+}
+
+$allJeux = getJeux();
+
+
+function addTournoi($name, $maxPlayer, $minPlayer, $price, $jeux, $date)
+{
     $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:ma,:mi,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ))";
-    $statement = EDatabase::prepare($sql,array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-	try {
-		$statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":p" => $price, ":j" => $jeux, ":d" => $date));
-	}
-	catch (PDOException $e) {
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":p" => $price, ":j" => $jeux, ":d" => $date));
+    } catch (PDOException $e) {
         echo $e;
-		return false;
-	}
-	// Done
-	return true;
+        return false;
+    }
+    // Done
+    return true;
 }
 
 verifyTournoiExist($name);
@@ -162,13 +193,31 @@ function verifyTournoiExist($name)
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
-                    Nom : <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required="">
-                    <input class="text mb-4" type="text" name="maxPlayer"  value="<?= $maxPlayer ?>"placeholder="Nombre de joueur Maximum" required="">
-                    <input class="text mb-4" type="text" name="minPlayer"  value="<?= $minPlayer ?>" placeholder="Nombre de joueur Minimum" required="">
-                    <input class="text mb-4" type="text" name="Price"  value="<?= $price ?>" placeholder="Récompence du tournoi en CHF" required="">
-                    <input class="text mb-4" type="text" name="jeux"  value="<?= $jeux ?>" placeholder="Jeux du tournoi" required="">
-                    <input class="text bg-dark mb-4 center" type="date"  value="<?= $date ?>" name="date" placeholder="Date du tournoi" required="">
-                    <input type="submit" name="submit" value="Valider">
+                    <label class="text-light">Nom :</label>
+                    <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required=""></input>
+                    <label class="text-light">Maximum de joueur :</label>
+                   
+                    <input class="text mb-4" type="text" name="maxPlayer" value="<?= $maxPlayer ?>" placeholder="Nombre de joueur Maximum" required=""></input>
+                    <label class="text-light">Minimum de joueur :</label>
+                   
+                    <input class="text mb-4" type="text" name="minPlayer" value="<?= $minPlayer ?>" placeholder="Nombre de joueur Minimum" required=""></input>
+                    <label class="text-light">Prix :</label>
+                   
+                    <input class="text mb-4" type="text" name="Price" value="<?= $price ?>" placeholder="Récompence du tournoi en CHF" required=""></input>
+                    <!-- <input class="text mb-4" type="text" name="jeux" value="" placeholder="Jeux du tournoi" required=""> -->
+                    <label class="text-light">Jeux :</label>
+                    <select name="jeux" class="mb-4 bg-dark text-light">
+                        <?php
+                        foreach ($allJeux as $jeu) {
+                            echo '<option class="text-light bg-dark" value="' . $jeu->nom . '">' . $jeu->nom . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <br>
+
+                    <label class="text-light">Date :</label>
+                    <input class="text bg-dark mb-4 text-light center" type="date" value="<?= $date ?>" name="date" placeholder="Date du tournoi" required=""></input>
+                    <input type="submit" name="submit" value="Valider"></input>
                 </form>
                 <p> <a href="../index.php">Retour</a></p>
             </div>

@@ -1,11 +1,16 @@
 <?php
 require_once './db/database.php';
+require_once './function.php';
+require_once './Classes/jeux.php';
+
 require_once './Classes/tournoi.php';
 session_start();
 $ab = "";
 $nomTournoi = $_GET["var"];
 $connection = "";
 if (Isset($_SESSION["pseudo"])) {
+    $connection = '<form action="#" method="POST"> <input type="submit" name="submit" value="S\'inscrire"> </form>';
+}else{
     $connection = 'Veuillez vous connectez pour pouvoir participer a ce tournoi ! ';
 }
 
@@ -38,6 +43,7 @@ if($tournoi == array()){
     echo "Une erreur est survenue";
 }
 
+$jeuxTournoi = getAJeux($tournoi[0]->date);
 
 ?>
 <!DOCTYPE html>
@@ -62,7 +68,7 @@ if($tournoi == array()){
 
 <body id="page-top ">
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="./index.php">Menu</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +91,7 @@ if($tournoi == array()){
         </div>
     </nav>
     <!-- Masthead-->
-    <header class="masthead">
+    <header class="masthead" style="background-image: url(./assets/img/<?=$tournoi[0]->date?>.jpg)">
 
     </header>
 
@@ -95,31 +101,15 @@ if($tournoi == array()){
                 <h2 class="section-heading text-uppercase text-light"><?=$tournoi[0]->nom ?></h2>
                 <h3 class="section-subheading text-muted"><?= $connection?></h3>
             </div>
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 1</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 2</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 3</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
+            <div class="text-light">
+                    <h3>Cash prize : <?=$tournoi[0]->prix?> </h3>
+                    <h3>Nombre de joueur minimum  : <?=$tournoi[0]->minPlayer?> </h3>
+                    <h3>Nombre de joueur Maxmimum  : <?=$tournoi[0]->maxPlayer?> </h3>
+                    <h3>Jeux du tournoi  : <?=$jeuxTournoi[0]->nom?> </h3>
+                    <h3>Date du tournoi  : <?=$tournoi[0]->jeux?> </h3>
+                    
+                    
+
             </div>
         </div>
     </section>
