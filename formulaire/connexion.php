@@ -7,6 +7,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 -->
 
 <?php
+session_start();
 require_once '../db/database.php';
 
 function verifieAccountExist($pseudo,$password)
@@ -39,9 +40,8 @@ if (isset($_POST["submit"])) {
 	}
 	
 	$verifie = verifieAccountExist($pseudo,$password);
-	var_dump($verifie);
 	if ($verifie == true) {
-		$_SESSION["connect"] == true;
+		$_SESSION["pseudo"] = $pseudo;
 		header("Location: ../index.php");
 	}
 }

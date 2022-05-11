@@ -6,6 +6,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 -->
 
 <?php
+session_start();
 require_once '../db/database.php';
 
 function verifiePseudoExist($pseudo)
@@ -60,6 +61,8 @@ if (isset($_POST["submit"])) {
 		$pseudoExist = verifiePseudoExist($pseudo);
 		if ($pseudoExist == true) {
 			addUsers($pseudo, $password);
+			$_SESSION["pseudo"] = $pseudo;
+			header("Location: ../index.php");
 		}
 	}
 }
