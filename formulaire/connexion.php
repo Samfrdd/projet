@@ -43,6 +43,7 @@ if (isset($_POST["submit"])) {
 	if ($verifie == true) {
 		$_SESSION["pseudo"] = $pseudo;
 		header("Location: ../index.php");
+		exit;
 	}
 }
 ?>
