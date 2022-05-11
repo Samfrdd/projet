@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-
+require_once './function.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -92,6 +92,27 @@
                     <button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>
                 </div>
                 <div class="row">
+
+                    <?php
+                foreach ($allTournoi as $tournoi) {
+                    
+                    echo '<div class="col-lg-4 col-sm-6 mb-4">';
+                    echo '<div class="portfolio-item">';
+                    echo ' <a class="portfolio-link" data-bs-toggle="modal" href="./tournoi.php?var='.$tournoi->nom.'">';
+                    echo '<div class="portfolio-hover">';
+                    echo '<div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>';
+                    echo '</div>';
+                    echo  '<img class="img-fluid" src="assets/img/'.$tournoi->date.'.jpg" alt="..." />';
+                    echo '</a>';
+                    echo  '<div class="portfolio-caption">';
+                    echo '<div class="portfolio-caption-heading">'.$tournoi->nom.'</div>';
+                    echo '<div class="portfolio-caption-subheading text-muted">Cash prize : '.$tournoi->prix.' CHF</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+
+                }
+                    ?>
                     <div class="col-lg-4 col-sm-6 mb-4">
                         <!-- Portfolio item 1-->
                         <div class="portfolio-item">

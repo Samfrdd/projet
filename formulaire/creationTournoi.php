@@ -5,6 +5,11 @@ detail : Formulaire de creation d'un tournoi
 -->
 
 <?php
+session_start();
+require_once '../db/database.php';
+require_once '../Classes/tournoi.php';
+
+
 $name = "";
 $minPlayer = "";
 $maxPlayer = "";
@@ -68,16 +73,61 @@ if (isset($_POST['submit'])) {
             $bValid = false;
     } else {
         $bValid = false;
-    }
+    } 
 
     // Est-ce qu'on a rencontré une erreur?
-    if ($bValid) {
-        if (addTool($name, $description, floatval($price)) == false)
+    if ($bValid && verifyTournoiExist($name) == true) {
+       // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
+        if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)){
             echo "asda";
+        }
+           
     } else {
-        echo 'Veuillez saisir les champs avec des valeurs valides';
+        echo 'Ce nom de tournoi existe deja';
     }
 }
+
+
+function addTournoi($name, $maxPlayer, $minPlayer, $price, $jeux, $date){
+    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:ma,:mi,:p,:d,:j)";
+    $statement = EDatabase::prepare($sql,array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":p" => $price, ":j" => $jeux, ":d" => $date));
+	}
+	catch (PDOException $e) {
+        echo $e;
+		return false;
+	}
+	// Done
+	return true;
+}
+
+verifyTournoiExist($name);
+function verifyTournoiExist($name)
+{
+    $sql = "SELECT `tournoi`.`Nom` FROM `projet`.`tournoi` Where `tournoi`.`Nom` = '$name'";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute();
+        $sql = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+    } catch (PDOException $e) {
+        return false;
+    }
+    if ($sql == "") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+
+
+// foreach ($allTournoi as $key => $tournoi) {
+//     echo $tournoi->nom;
+//     echo "<br>";
+// }
 
 ?>
 <!DOCTYPE html>
@@ -112,7 +162,7 @@ if (isset($_POST['submit'])) {
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
-                    <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required="">
+                    Nom : <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required="">
                     <input class="text mb-4" type="text" name="maxPlayer"  value="<?= $maxPlayer ?>"placeholder="Nombre de joueur Maximum" required="">
                     <input class="text mb-4" type="text" name="minPlayer"  value="<?= $minPlayer ?>" placeholder="Nombre de joueur Minimum" required="">
                     <input class="text mb-4" type="text" name="Price"  value="<?= $price ?>" placeholder="Récompence du tournoi en CHF" required="">
