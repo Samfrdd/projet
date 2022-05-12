@@ -9,7 +9,18 @@
 
 require_once './function.php';
 session_start();
-
+if (isset($_POST["submit"])) {
+    // Vérification du champs palyer
+    if (filter_has_var(INPUT_POST, 'searchPlayer')) {
+        $pseudo = filter_input(INPUT_POST, "searchPlayer", FILTER_SANITIZE_STRING);
+    }
+    $pseudoExist = verifiePseudoExist($pseudo);
+    if (!$pseudoExist) {
+        if ($pseudo != $_SESSION["pseudo"]) {
+            addInvitation($pseudo);
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -45,8 +56,8 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="#services">Team</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Tournoi</a></li>
                     <?php
-                    if (Isset($_SESSION["pseudo"])) {
-                        echo '<li class="nav-item"><a class="nav-link" href="#">'.$_SESSION["pseudo"].'</a></li>';
+                    if (isset($_SESSION["pseudo"])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                     } else {
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
@@ -94,6 +105,10 @@ session_start();
                     <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
                 </div>
             </div>
+            <form action="#" method="POST">
+            <input type="text" name="searchPlayer" placeholder="Chercher un joueur">
+            <input type="submit" name="submit" value="Invitation">
+            </form>
         </div>
     </section>
     <!-- Portfolio Grid-->
@@ -103,12 +118,12 @@ session_start();
                 <h2 class="section-heading text-uppercase text-light">Tournoi</h2>
                 <h3 class="section-subheading text-muted mb-4">Vous pouvez créez ou rejoindre des tournoi ici !</h3>
                 <?php
-                    if ($_SESSION["pseudo"] != "") {
-                       echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
-                    } else {
-                    }
-                    ?>
-                
+                if ($_SESSION["pseudo"] != "") {
+                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
+                } else {
+                }
+                ?>
+
             </div>
             <div class="row" style="">
                 <?php

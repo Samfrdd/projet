@@ -15,12 +15,12 @@ function verifieTeamExist($Nom)
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
         $statement->execute(array(":n" => $Nom));
-        $sql = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
     } catch (PDOException $e) {
         echo $e;
         return false;
     }
-    if ($sql == "") {
+    if ($resultat == "") {
         return true;
     } else {
         return false;
