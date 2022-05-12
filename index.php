@@ -1,7 +1,6 @@
 <?php
 
 /**
- * Module 151
  * @author Sam Freddi / Anthony Puchol
  * @copyright Sam Freddi
  * @version 1.0.0
@@ -49,11 +48,12 @@ session_start();
                     <?php
                     if (Isset($_SESSION["pseudo"])) {
                         echo '<li class="nav-item"><a class="nav-link" href="#">'.$_SESSION["pseudo"].'</a></li>';
-                        echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php">Deconnexion</a></li>';
+                        echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php"><img src="./assets/img/deconnexion.png"></a></li>';
 
                     } else {
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
+                        
                     <?php
                     }
                     ?>
@@ -107,7 +107,7 @@ session_start();
                 <h2 class="section-heading text-uppercase text-light">Tournoi</h2>
                 <h3 class="section-subheading text-muted mb-4">Vous pouvez créez ou rejoindre des tournoi ici !</h3>
                 <?php
-                    if ($_SESSION["pseudo"] != "") {
+                    if (Isset($_SESSION["pseudo"])) {
                        echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
                     } else {
                     }
