@@ -39,7 +39,9 @@ if (isset($_POST["submit"])) {
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
+
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="./formulaire/css/style.css" rel="stylesheet" type="text/css" media="all" />
 </head>
 
 <body id="page-top ">
@@ -56,8 +58,10 @@ if (isset($_POST["submit"])) {
                     <li class="nav-item"><a class="nav-link" href="#services">Team</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Tournoi</a></li>
                     <?php
-                    if (isset($_SESSION["pseudo"])) {
-                        echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
+                    if (Isset($_SESSION["pseudo"])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="#">'.$_SESSION["pseudo"].'</a></li>';
+                        echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php">Deconnexion</a></li>';
+
                     } else {
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
@@ -69,7 +73,7 @@ if (isset($_POST["submit"])) {
         </div>
     </nav>
     <!-- Masthead-->
-    <header class="masthead">
+    <header class="masthead" >
 
     </header>
     <!-- Services-->
