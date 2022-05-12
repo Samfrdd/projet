@@ -8,7 +8,18 @@
 
 require_once './function.php';
 session_start();
-
+if (isset($_POST["submit"])) {
+    // Vérification du champs palyer
+    if (filter_has_var(INPUT_POST, 'searchPlayer')) {
+        $pseudo = filter_input(INPUT_POST, "searchPlayer", FILTER_SANITIZE_STRING);
+    }
+    $pseudoExist = verifiePseudoExist($pseudo);
+    if (!$pseudoExist) {
+        if ($pseudo != $_SESSION["pseudo"]) {
+            addInvitation($pseudo);
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -98,6 +109,10 @@ session_start();
                     <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
                 </div>
             </div>
+            <form action="#" method="POST">
+            <input type="text" name="searchPlayer" placeholder="Chercher un joueur">
+            <input type="submit" name="submit" value="Invitation">
+            </form>
         </div>
     </section>
     <!-- Portfolio Grid-->

@@ -2,7 +2,6 @@
 
 require_once './db/database.php';
 require_once './Classes/tournoi.php';
-
 function getAllTournoi(){
     {
         $arr = array();
@@ -29,6 +28,36 @@ function getAllTournoi(){
     }
 }
 
+function verifiePseudoExist($pseudo)
+{
+	$sql = "SELECT `utilisateurs`.`Pseudo` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = '$pseudo'";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute();
+		$sql=$statement->fetch(PDO::FETCH_ASSOC,PDO::FETCH_ORI_NEXT);
+	} catch (PDOException $e) {
+		return false;
+	}
+	if ($sql == "") {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function addInvitation($pseudo){
+    $sql = "INSERT INTO `projet`.`invitation` (`idUtilisateur`,`idEquipe`,`date`)
+    SELECT :p , idEquipe, NOW()
+    From projet.utilisateurs
+    where Pseudo = :n;";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":p"=> $pseudo,":n" => $_SESSION["pseudo"]));
+	} catch (PDOException $e) {
+		return false;
+	}
+}
 
 $allTournoi = getAllTournoi();
 

@@ -63,6 +63,7 @@ if (isset($_POST["submit"])) {
 			addUsers($pseudo, $password);
 			$_SESSION["pseudo"] = $pseudo;
 			header("Location: ../index.php");
+			exit;
 		}
 	}
 }
