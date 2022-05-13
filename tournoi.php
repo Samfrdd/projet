@@ -21,8 +21,6 @@ if($tournoi == array()){
     echo "Une erreur est survenue";
 }
 
-$jeuxTournoi = getAJeux($tournoi->jeux);
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -84,7 +82,7 @@ $jeuxTournoi = getAJeux($tournoi->jeux);
                     <h3>Nombre d'équipe minimum  : <?=$tournoi->minPlayer?> </h3>
                     <h3>Nombre d'équipe actuelle  : <?= nbTeamRegister($tournoi->nom); ?>/<?=$tournoi->maxPlayer?> </h3>
                     <h3>Nombre de joueur par équipe : <?=$tournoi->nbJoueurEquipe?> </h3>
-                    <h3>Jeux du tournoi  : <?=$jeuxTournoi->nom?> </h3>
+                    <h3>Jeux du tournoi  : <?=$tournoi->jeux?> </h3>
                     <h3>Date du tournoi  : <?=$tournoi->date?> </h3>
                     
                     

@@ -6,7 +6,9 @@ function getAllTournoi()
 { {
         $arr = array();
 
-        $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`tournoi`.`IdJeux`, `tournoi`.`NbJoueurEquipe`FROM `projet`.`tournoi`";
+        $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`
+        FROM `projet`.`tournoi` 
+        INNER JOIN jeux ON jeux.idJeux = tournoi.idJeux";
         $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         try {
             $statement->execute();
@@ -17,7 +19,7 @@ function getAllTournoi()
         while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
             // On crée l'objet EClient en l'initialisant avec les données provenant
             // de la base de données
-            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
+            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux']);
             // On place l'objet EClient créé dans le tableau
             array_push($arr, $c);
         }
@@ -62,7 +64,10 @@ $allTournoi = getAllTournoi();
 
 function getTournoi($nomTournoi)
 {
-    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`tournoi`.`IdJeux`,`tournoi`.`NbJoueurEquipe`FROM `projet`.`tournoi` WHERE tournoi.nom = :n";
+    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`
+    FROM `projet`.`tournoi` 
+    INNER JOIN jeux ON jeux.idJeux = tournoi.idJeux
+    WHERE tournoi.nom = :n";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
         $statement->execute(array(":n" => $nomTournoi));
@@ -73,28 +78,7 @@ function getTournoi($nomTournoi)
     while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
         // On crée l'objet EClient en l'initialisant avec les données provenant
         // de la base de données
-        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
-        // On place l'objet EClient créé dans le tableau
-    }
-
-    // Done
-    return $c;
-}
-
-function getAJeux($id)
-{
-    $sql = "SELECT `jeux`.`IdJeux`,`jeux`.`Nom`FROM `projet`.`jeux` WHERE IdJeux = :i";
-    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    try {
-        $statement->execute(array(":i" => $id));
-    } catch (PDOException $e) {
-        return false;
-    }
-    // On parcoure les enregistrements 
-    while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
-        // On crée l'objet EClient en l'initialisant avec les données provenant
-        // de la base de données
-        $c = new EJeux(intval($row['IdJeux']), $row['Nom']);
+        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux']);
         // On place l'objet EClient créé dans le tableau
     }
 
