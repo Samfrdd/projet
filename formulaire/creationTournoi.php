@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'minPlayer')) {
         $minPlayer = filter_input(INPUT_POST, 'minPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-        if ($minPlayer === false || floatval($minPlayer) == 0)
+        if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer)
             $bValid = false;
     } else {
         $bValid = false;
@@ -71,25 +71,25 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'date')) {
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
-        if ($date === false || $date > date("D:M:Y"))
+        if ($date === false || $date < date("m.d.y"))
             $bValid = false;
     } else {
         $bValid = false;
     }
 
     // Est-ce qu'on a rencontré une erreur?
-    if ($bValid && verifyTournoiExist($name) == true) {
-        // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-        if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)) {
-            echo "asda";
-        }else{
-            header("Location: ../index.php");
-            exit;
+            if ($bValid && verifyTournoiExist($name) == true) {
+                // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
+                if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)) {
+                    echo "asda";
+                } else {
+                    header("Location: ../index.php");
+                    exit;
+                }
+            } else {
+                echo 'Ce nom de tournoi existe deja';
+            }
         }
-    } else {
-        echo 'Ce nom de tournoi existe deja';
-    }
-}
 
 
 function getJeux()
@@ -196,13 +196,13 @@ function verifyTournoiExist($name)
                     <label class="text-light">Nom :</label>
                     <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required=""></input>
                     <label class="text-light">Maximum de joueur :</label>
-                   
+
                     <input class="text mb-4" type="text" name="maxPlayer" value="<?= $maxPlayer ?>" placeholder="Nombre de joueur Maximum" required=""></input>
                     <label class="text-light">Minimum de joueur :</label>
-                   
+
                     <input class="text mb-4" type="text" name="minPlayer" value="<?= $minPlayer ?>" placeholder="Nombre de joueur Minimum" required=""></input>
                     <label class="text-light">Prix :</label>
-                   
+
                     <input class="text mb-4" type="text" name="Price" value="<?= $price ?>" placeholder="Récompence du tournoi en CHF" required=""></input>
                     <!-- <input class="text mb-4" type="text" name="jeux" value="" placeholder="Jeux du tournoi" required=""> -->
                     <label class="text-light">Jeux :</label>
