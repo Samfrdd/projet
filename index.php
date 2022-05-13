@@ -89,7 +89,7 @@ if (isset($_POST["submit"])) {
                         <?php
                         if (verifieTeam($_SESSION["pseudo"])) {
                             echo "<h2 class='section-heading text-uppercase text-light'>" . verifieTeam($_SESSION["pseudo"]) . "</h2>";
-                            echo "<h3 class='section-subheading text-muted'>Votre equipe</h3>";
+                            echo "<h3 class='section-subheading text-muted'>Votre équipe</h3>";
                         }
                         ?>
 

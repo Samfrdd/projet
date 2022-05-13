@@ -129,7 +129,7 @@ function displayTeam($Team)
     foreach ($Team as $array) {
         foreach ($array as $key => $value) {
             if ($key === "Pseudo") {
-                echo "<div class='col-md-2'>
+                echo "<div class='col-md-3'>
             <span class='fa-stack fa-3x'>
                 <i class='fas fa-circle fa-stack-2x text-primary'></i>
                 <i class='fas fa-laptop fa-stack-1x fa-inverse'></i></span>
@@ -185,6 +185,26 @@ function nbTeamRegister($tournoi)
     }
     if ($resultat) {
         return $resultat["nbTeam"];
+    } else {
+        return false;
+    }
+}
+
+function verifieIsCaptaine($pseudo)
+{
+    $sql = "SELECT `utilisateurs`.`Role`
+    FROM `projet`.`utilisateurs`
+    WHERE `utilisateurs`.pseudo = :p And `utilisateurs`.`Role` = 'Capitaine'";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":p" => $pseudo));
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    if ($resultat) {
+        return true;
     } else {
         return false;
     }

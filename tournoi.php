@@ -13,6 +13,12 @@ if (Isset($_SESSION["pseudo"])) {
 }else{
     $connection = 'Veuillez vous connectez pour pouvoir participer a ce tournoi ! ';
 }
+if (verifieIsCaptaine($_SESSION["pseudo"])) {
+    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="POST"> <input type="submit" name="submit" value="S\'inscrire"> </form>';
+}
+else {
+    $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! '; 
+}
 
 
 
