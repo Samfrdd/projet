@@ -17,7 +17,7 @@ function getAllTournoi()
         while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
             // On crée l'objet EClient en l'initialisant avec les données provenant
             // de la base de données
-            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']),intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
+            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
             // On place l'objet EClient créé dans le tableau
             array_push($arr, $c);
         }
@@ -73,7 +73,7 @@ function getTournoi($nomTournoi)
     while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
         // On crée l'objet EClient en l'initialisant avec les données provenant
         // de la base de données
-        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']),intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
+        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
         // On place l'objet EClient créé dans le tableau
     }
 
@@ -185,12 +185,12 @@ function verifieTeam($pseudo)
 
 function nbTeamRegister($tournoi)
 {
-    $sql = "SELECT `equipe`.`Nom`
-            FROM `projet`.`equipe`
-            WHERE `equipe`.idEquipe = (
-                SELECT `utilisateurs`.`IdEquipe`
-                FROM `projet`.`utilisateurs`
-                WHERE `utilisateurs`.`Pseudo` = :p )";
+    $sql = "SELECT count(`participation`.`IdTournoi`) AS nbTeam
+    FROM `projet`.`participation`
+    WHERE `participation`.`IdTournoi` = (
+        SELECT tournoi.idTournoi
+        FROM projet.tournoi
+        WHERE tournoi.Nom = :t)";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
         $statement->execute(array(":t" => $tournoi));
@@ -200,7 +200,7 @@ function nbTeamRegister($tournoi)
         return false;
     }
     if ($resultat) {
-        return $resultat["Nom"];
+        return $resultat["nbTeam"];
     } else {
         return false;
     }

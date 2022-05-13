@@ -82,7 +82,7 @@ $jeuxTournoi = getAJeux($tournoi->jeux);
             <div class="text-light">
                     <h3>Cash prize : <?=$tournoi->prix?> </h3>
                     <h3>Nombre d'équipe minimum  : <?=$tournoi->minPlayer?> </h3>
-                    <h3>Nombre d'équipe Maximum  : <?=$tournoi->maxPlayer?> </h3>
+                    <h3>Nombre d'équipe actuelle  : <?= nbTeamRegister($tournoi->nom); ?>/<?=$tournoi->maxPlayer?> </h3>
                     <h3>Nombre de joueur par équipe : <?=$tournoi->nbJoueurEquipe?> </h3>
                     <h3>Jeux du tournoi  : <?=$jeuxTournoi->nom?> </h3>
                     <h3>Date du tournoi  : <?=$tournoi->date?> </h3>
