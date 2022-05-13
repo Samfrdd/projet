@@ -6,7 +6,7 @@ function getAllTournoi()
 { {
         $arr = array();
 
-        $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`tournoi`.`IdJeux`FROM `projet`.`tournoi`";
+        $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`tournoi`.`IdJeux`, `tournoi`.`NbJoueurEquipe`FROM `projet`.`tournoi`";
         $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         try {
             $statement->execute();
@@ -17,7 +17,7 @@ function getAllTournoi()
         while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
             // On crée l'objet EClient en l'initialisant avec les données provenant
             // de la base de données
-            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
+            $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']),intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
             // On place l'objet EClient créé dans le tableau
             array_push($arr, $c);
         }
@@ -60,10 +60,29 @@ function addInvitation($pseudo)
 
 $allTournoi = getAllTournoi();
 
+function getTournoi($nomTournoi)
+{
+    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`tournoi`.`IdJeux`,`tournoi`.`NbJoueurEquipe`FROM `projet`.`tournoi` WHERE tournoi.nom = :n";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":n" => $nomTournoi));
+    } catch (PDOException $e) {
+        return false;
+    }
+    // On parcoure les enregistrements 
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
+        // On crée l'objet EClient en l'initialisant avec les données provenant
+        // de la base de données
+        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']),intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], intval($row['IdJeux']));
+        // On place l'objet EClient créé dans le tableau
+    }
+
+    // Done
+    return $c;
+}
+
 function getAJeux($id)
 {
-    $arr = array();
-
     $sql = "SELECT `jeux`.`IdJeux`,`jeux`.`Nom`FROM `projet`.`jeux` WHERE IdJeux = :i";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
@@ -77,11 +96,10 @@ function getAJeux($id)
         // de la base de données
         $c = new EJeux(intval($row['IdJeux']), $row['Nom']);
         // On place l'objet EClient créé dans le tableau
-        array_push($arr, $c);
     }
 
     // Done
-    return $arr;
+    return $c;
 }
 
 function verifieRole($Nom)
@@ -127,7 +145,7 @@ function displayTeam($Team)
     foreach ($Team as $array) {
         foreach ($array as $key => $value) {
             if ($key === "Pseudo") {
-                echo "<div class='col-md-3'>
+                echo "<div class='col-md-2'>
             <span class='fa-stack fa-3x'>
                 <i class='fas fa-circle fa-stack-2x text-primary'></i>
                 <i class='fas fa-laptop fa-stack-1x fa-inverse'></i></span>
@@ -153,6 +171,29 @@ function verifieTeam($pseudo)
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
         $statement->execute(array(":p" => $pseudo));
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    if ($resultat) {
+        return $resultat["Nom"];
+    } else {
+        return false;
+    }
+}
+
+function nbTeamRegister($tournoi)
+{
+    $sql = "SELECT `equipe`.`Nom`
+            FROM `projet`.`equipe`
+            WHERE `equipe`.idEquipe = (
+                SELECT `utilisateurs`.`IdEquipe`
+                FROM `projet`.`utilisateurs`
+                WHERE `utilisateurs`.`Pseudo` = :p )";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":t" => $tournoi));
         $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
     } catch (PDOException $e) {
         echo $e;

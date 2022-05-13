@@ -132,14 +132,13 @@ if (isset($_POST["submit"])) {
             <div class="row" style="">
                 <?php
                 foreach ($allTournoi as $tournoi) {
-
                     echo '<div class="col-lg-4 col-sm-6 mb-4">';
                     echo '<div class="portfolio-item">';
                     echo ' <a class="portfolio-link" data-bs-toggle="modal" href="./tournoi.php?var=' . $tournoi->nom . '">';
                     echo '<div class="portfolio-hover">';
                     echo '<div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>';
                     echo '</div>';
-                    echo  '<img class="img-fluid" src="assets/img/' . $tournoi->date . '.jpg" alt="..." />';
+                    echo  '<img class="img-fluid" src="assets/img/' . $tournoi->jeux . '.jpg" alt="..." />';
                     echo '</a>';
                     echo  '<div class="portfolio-caption">';
                     echo '<div class="portfolio-caption-heading">' . $tournoi->nom . '</div>';

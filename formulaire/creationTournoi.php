@@ -18,6 +18,7 @@ $maxPlayer = "";
 $price = "";
 $jeux = "";
 $date = "";
+$nbJoueurEquipe = 0;
 
 
 if (isset($_POST['submit'])) {
@@ -45,6 +46,15 @@ if (isset($_POST['submit'])) {
     if (filter_has_var(INPUT_POST, 'minPlayer')) {
         $minPlayer = filter_input(INPUT_POST, 'minPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
         if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer || floatval($minPlayer) % 2 != 0)
+            $bValid = false;
+    } else {
+        $bValid = false;
+    }
+
+    // Vérification du champs quantité
+    if (filter_has_var(INPUT_POST, 'nbJoueurEquipe')) {
+        $nbJoueurEquipe = filter_input(INPUT_POST, 'nbJoueurEquipe', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
+        if ($nbJoueurEquipe === false || floatval($nbJoueurEquipe) == 0 || floatval($nbJoueurEquipe) > 5)
             $bValid = false;
     } else {
         $bValid = false;
@@ -80,7 +90,7 @@ if (isset($_POST['submit'])) {
     // Est-ce qu'on a rencontré une erreur?
             if ($bValid && verifyTournoiExist($name) == true) {
                 // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-                if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($price), $jeux, $date)) {
+                if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($nbJoueurEquipe), floatval($price), $jeux, $date)) {
                     echo "asda";
                 } else {
                     header("Location: ../index.php");
@@ -119,12 +129,12 @@ function getJeux()
 $allJeux = getJeux();
 
 
-function addTournoi($name, $maxPlayer, $minPlayer, $price, $jeux, $date)
+function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeux, $date)
 {
-    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:ma,:mi,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ))";
+    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `NbJoueurEquipe`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:mi,:ma,:nb,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ))";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":p" => $price, ":j" => $jeux, ":d" => $date));
+        $statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":nb" => $nbJoueurEquipe, ":p" => $price, ":j" => $jeux, ":d" => $date));
     } catch (PDOException $e) {
         echo $e;
         return false;
@@ -195,14 +205,17 @@ function verifyTournoiExist($name)
                 <form action="#" method="post">
                     <label class="text-light">Nom :</label>
                     <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required=""></input>
+                    
                     <label class="text-light">Maximum de joueur :</label>
-
                     <input class="text mb-4" type="text" name="maxPlayer" value="<?= $maxPlayer ?>" placeholder="Nombre de joueur Maximum" required=""></input>
+                    
                     <label class="text-light">Minimum de joueur :</label>
-
                     <input class="text mb-4" type="text" name="minPlayer" value="<?= $minPlayer ?>" placeholder="Nombre de joueur Minimum" required=""></input>
+                    
+                    <label class="text-light">Nombre de joueur par équipe :</label>
+                    <input class="text mb-4" type="text" name="nbJoueurEquipe" value="<?= $nbJoueurEquipe ?>" placeholder="Nombre de joueur par équipe" required=""></input>
+                    
                     <label class="text-light">Prix :</label>
-
                     <input class="text mb-4" type="text" name="Price" value="<?= $price ?>" placeholder="Récompence du tournoi en CHF" required=""></input>
                     <!-- <input class="text mb-4" type="text" name="jeux" value="" placeholder="Jeux du tournoi" required=""> -->
                     <label class="text-light">Jeux :</label>
