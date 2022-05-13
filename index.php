@@ -20,6 +20,8 @@ if (isset($_POST["submit"])) {
         }
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -57,14 +59,13 @@ if (isset($_POST["submit"])) {
                     <li class="nav-item"><a class="nav-link" href="#services">Team</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Tournoi</a></li>
                     <?php
-                    if (Isset($_SESSION["pseudo"])) {
-                        echo '<li class="nav-item"><a class="nav-link" href="#">'.$_SESSION["pseudo"].'</a></li>';
+                    if (isset($_SESSION["pseudo"])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                         echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php"><img src="./assets/img/deconnexion.png"></a></li>';
-
                     } else {
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
-                        
+
                     <?php
                     }
                     ?>
@@ -73,48 +74,47 @@ if (isset($_POST["submit"])) {
         </div>
     </nav>
     <!-- Masthead-->
-    <header class="masthead" >
+    <header class="masthead">
 
     </header>
     <!-- Services-->
-    <section class="page-section bg-dark" id="services">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase text-light">Team</h2>
-                <h3 class="section-subheading text-muted">Rejoint une equipe !</h3>
-            </div>
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 1</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+    <?php
+    if (isset($_SESSION["pseudo"])) {
+        if (!verifieRole($_SESSION["pseudo"])) {
+            $team = getTeam($_SESSION["pseudo"])
+    ?>
+            <section class="page-section bg-dark" id="services">
+                <div class="container">
+                    <div class="text-center">
+                        <?php
+                        if (verifieTeam($_SESSION["pseudo"])) {
+                            echo "<h2 class='section-heading text-uppercase text-light'>" . verifieTeam($_SESSION["pseudo"]) . "</h2>";
+                            echo "<h3 class='section-subheading text-muted'>Votre equipe</h3>";
+                        }
+                        ?>
+
+
+                    </div>
+                    <div class="row text-center">
+                        <?php
+                        displayTeam($team);
+                        ?>
+                    </div>
+                    <form action="#" method="POST">
+                        <input type="text" name="searchPlayer" placeholder="Chercher un joueur">
+                        <input type="submit" name="submit" value="Invitation">
+                    </form>
                 </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 2</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3 text-light">Equipe 3</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-            </div>
-            <form action="#" method="POST">
-            <input type="text" name="searchPlayer" placeholder="Chercher un joueur">
-            <input type="submit" name="submit" value="Invitation">
-            </form>
-        </div>
-    </section>
+            </section>
+    <?php
+        }
+        else {
+            echo " <section class='page-section bg-dark' id='services'><div class='container'><div class='text-center'><h2 class='section-heading text-uppercase text-light'>Rejoint une equipe !</h2>";
+                            echo "<h3 class='section-subheading text-muted'>Si tu veux participer a des tournois</h3>";
+                            echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTeam.php">Créez une équipe</a></button></div></div></section>';
+        }
+    }
+    ?>
     <!-- Portfolio Grid-->
     <section class="page-section bg-dark" id="portfolio">
         <div class="container">
@@ -122,12 +122,12 @@ if (isset($_POST["submit"])) {
                 <h2 class="section-heading text-uppercase text-light">Tournoi</h2>
                 <h3 class="section-subheading text-muted mb-4">Vous pouvez créez ou rejoindre des tournoi ici !</h3>
                 <?php
-                    if (Isset($_SESSION["pseudo"])) {
-                       echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
-                    } else {
-                    }
-                    ?>
-                
+                if (isset($_SESSION["pseudo"])) {
+                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
+                } else {
+                }
+                ?>
+
             </div>
             <div class="row" style="">
                 <?php
