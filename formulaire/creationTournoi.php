@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'maxPlayer')) {
         $maxPlayer = filter_input(INPUT_POST, 'maxPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-        if ($maxPlayer === false || floatval($maxPlayer) == 0)
+        if ($maxPlayer === false || floatval($maxPlayer) == 0 || floatval($maxPlayer) % 2 != 0)
             $bValid = false;
     } else {
         $bValid = false;
@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'minPlayer')) {
         $minPlayer = filter_input(INPUT_POST, 'minPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-        if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer)
+        if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer || floatval($minPlayer) % 2 != 0)
             $bValid = false;
     } else {
         $bValid = false;
