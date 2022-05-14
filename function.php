@@ -238,3 +238,16 @@ function verfieTeamRegister($nameTournoi, $pseudo)
 		return false;
 	}
 }
+
+function tournoiDateExpired (){
+    $sql = "DELETE FROM `projet`.`tournoi`
+            WHERE `tournoi`.`dateDebut` < now()";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute();
+	} catch (PDOException $e) {
+		echo $e;
+		return false;
+	}
+	return true;
+}

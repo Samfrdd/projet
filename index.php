@@ -8,6 +8,7 @@
 
 require_once './function.php';
 session_start();
+tournoiDateExpired();
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
@@ -20,6 +21,8 @@ if (isset($_POST["submit"])) {
         }
     }
 }
+
+
 
 
 ?>
