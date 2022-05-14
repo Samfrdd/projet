@@ -209,3 +209,32 @@ function verifieIsCaptaine($pseudo)
         return false;
     }
 }
+
+function verfieTeamRegister($nameTournoi, $pseudo)
+{
+	$sql = "SELECT `participation`.`idEquipe`
+	FROM `projet`.`participation`
+	WHERE `participation`.idEquipe = (
+		SELECT utilisateurs.idEquipe
+		FROM projet.utilisateurs
+		WHERE utilisateurs.pseudo = :p)
+	AND `participation`.idTournoi = (
+		SELECT tournoi.idTournoi
+		FROM projet.tournoi
+		Where tournoi.Nom = :n
+	)";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":p" => $pseudo,":n" => $nameTournoi));
+		$resultat = $statement->fetchAll();
+	} catch (PDOException $e) {
+		echo $e;
+		return false;
+	}
+	if (!$resultat) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}

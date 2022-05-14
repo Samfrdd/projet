@@ -8,6 +8,118 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <?php
 session_start();
 require_once '../db/database.php';
+
+function getTeam($pseudo)
+{
+	$sql = "SELECT `utilisateurs`.`Pseudo`,`utilisateurs`.`Role`
+            FROM `projet`.`utilisateurs`
+            WHERE `utilisateurs`.idEquipe = (
+                SELECT `utilisateurs`.`IdEquipe`
+                FROM `projet`.`utilisateurs`
+                WHERE `utilisateurs`.`Pseudo` = :p )
+            ORDER BY utilisateurs.Role";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":p" => $pseudo));
+		$resultat = $statement->fetchAll();
+	} catch (PDOException $e) {
+		echo $e;
+		return false;
+	}
+	return $resultat;
+}
+
+function displayTeam($Team)
+{
+	foreach ($Team as $array) {
+		foreach ($array as $key => $value) {
+			if ($key === "Pseudo") {
+				echo "<div class='col-md-3'>
+            <span class='fa-stack fa-3x'>
+                <i class='fas fa-circle fa-stack-2x text-primary'></i>
+                <i class='fas fa-laptop fa-stack-1x fa-inverse'></i></span>
+                <input type='checkbox' name='$value' >
+				<label for='$value'><h4 class='my-3 text-light'> $value </h4></label>";
+			}
+			if ($key === "Role") {
+				echo "<p class='text-muted'> $value </p>
+				</div>";
+			}
+		}
+	}
+}
+
+function verfieTeamRegister($nameTournoi, $pseudo)
+{
+	$sql = "SELECT `participation`.`idEquipe`
+	FROM `projet`.`participation`
+	WHERE `participation`.idEquipe = (
+		SELECT utilisateurs.idEquipe
+		FROM projet.utilisateurs
+		WHERE utilisateurs.pseudo = :p)
+	AND `participation`.idTournoi = (
+		SELECT tournoi.idTournoi
+		FROM projet.tournoi
+		Where tournoi.Nom = :n
+	)";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":p" => $pseudo,":n" => $nameTournoi));
+		$resultat = $statement->fetchAll();
+	} catch (PDOException $e) {
+		echo $e;
+		return false;
+	}
+	if (!$resultat) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function addTeamParticipation ($nameTournoi, $pseudo){
+	$sql = "INSERT INTO `projet`.`participation`
+	(`IdEquipe`,
+	`IdTournoi`)	
+		SELECT utilisateurs.idEquipe, tournoi.idTournoi
+		FROM projet.utilisateurs ,projet.tournoi
+		WHERE utilisateurs.pseudo = :p and tournoi.Nom = :n	";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":p" => $pseudo,":n" => $nameTournoi));
+	} catch (PDOException $e) {
+		echo $e;
+		return false;
+	}
+	return true;
+}
+
+if (isset($_POST["inscription"])) {
+	$bValid = true;
+	// Vérification de la case a cocher valider
+	if (filter_has_var(INPUT_POST, 'valider')) {
+		$valider = filter_input(INPUT_POST, 'valider', FILTER_SANITIZE_STRING);
+		if ($valider === false || strlen($valider) == 0)
+			$bValid = false;
+	} else
+		$bValid = false;
+
+	// Est-ce qu'on a rencontré une erreur?
+	if ($bValid && verfieTeamRegister($_GET["nameTournoi"],$_SESSION["pseudo"]) == true) {
+		// echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
+		if (!addTeamParticipation($_GET["nameTournoi"],$_SESSION["pseudo"])) {
+			echo "asda";
+		} else {
+			header("Location: ../index.php");
+			exit;
+		}
+	} else {
+		echo 'Vous êtes déjà inscrit a se tournoi';
+	}
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -37,16 +149,16 @@ require_once '../db/database.php';
 <body>
 	<!-- main -->
 	<div class="main-w3layouts wrapper">
-		<h1>Crée un compte</h1>
+		<h1>Inscrivez vous aux tournoi</h1>
 		<div class="main-agileinfo">
 			<div class="agileits-top">
 				<form action="#" method="post">
-					<input class="text" type="text" name="Pseudo" placeholder="Pseudo" required="">
-					<input class="text w3lpass" type="password" name="password" placeholder="Mot de passe" required="">
-					<input class="text w3lpass" type="password" name="ConfirmPassword" placeholder="Confirmer Mot de passe" required="">
-					<input type="submit" name="submit" value="Inscription">
+					<label for="valider">
+						<input type="checkbox" name="valider" required>
+						Voulez-vous participer a se tournoi.
+					</label>
+					<input type="submit" name="inscription" value="Inscription">
 				</form>
-				<p>Vous avez deja un compte ? <a href="./connexion.php"> Connectez-vous !</a></p>
 			</div>
 		</div>
 	</div>

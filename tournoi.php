@@ -8,18 +8,27 @@ session_start();
 $ab = "";
 $nomTournoi = $_GET["var"];
 $connection = "";
+$nameTournoi = $_GET["var"];
 if (Isset($_SESSION["pseudo"])) {
-    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="POST"> <input type="submit" name="submit" value="S\'inscrire"> </form>';
+    $connection = "<form action='./formulaire/inscriptionTournoi.php' method='GET'> <input type='submit' name='submit' value='S"."\'"."inscrire'><input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
 }else{
     $connection = 'Veuillez vous connectez pour pouvoir participer a ce tournoi ! ';
 }
 if (verifieIsCaptaine($_SESSION["pseudo"])) {
-    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="POST"> <input type="submit" name="submit" value="S\'inscrire"> </form>';
+    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+    $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
 }
 else {
     $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! '; 
 }
 
+if (verfieTeamRegister($nameTournoi,$_SESSION["pseudo"])) {
+    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+    $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
+}
+else {
+    $connection = 'Vous êtes déjà inscrit '; 
+}
 
 
 $tournoi = getTournoi($nomTournoi);
@@ -50,6 +59,7 @@ if($tournoi == array()){
 
 <body id="page-top ">
     <!-- Navigation-->
+    
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="./index.php">Menu</a>
