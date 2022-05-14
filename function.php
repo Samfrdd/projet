@@ -241,7 +241,7 @@ function verfieTeamRegister($nameTournoi, $pseudo)
 
 function tournoiDateExpired (){
     $sql = "DELETE FROM `projet`.`tournoi`
-            WHERE `tournoi`.`dateDebut` < now()";
+            WHERE `tournoi`.`dateDebut` < CURDATE()";
 	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	try {
 		$statement->execute();
