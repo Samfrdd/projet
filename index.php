@@ -42,9 +42,15 @@ if (isset($_POST["submit"])) {
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
 
+
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/notif.css" rel="stylesheet" />
     <link href="./formulaire/css/style.css" rel="stylesheet" type="text/css" media="all" />
 </head>
 
@@ -63,6 +69,22 @@ if (isset($_POST["submit"])) {
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Tournoi</a></li>
                     <?php
                     if (isset($_SESSION["pseudo"])) {
+                        echo '<div class="icon mr-2" id="bell"> <img src="https://i.imgur.com/AC7dgLA.png" alt=""> </div>
+                        <div class="notifications" id="box">
+                            <h2>Notifications - <span>2</span></h2>
+                            <div class="notifications-item"> <img src="https://i.imgur.com/uIgDDDd.jpg" alt="img">
+                                <div class="text">
+                                    <h4>Samso aliao</h4>
+                                    <p>Samso Nagaro Like your home work</p>
+                                </div>
+                            </div>
+                            <div class="notifications-item"> <img src="https://img.icons8.com/flat_round/64/000000/vote-badge.png" alt="img">
+                                <div class="text">
+                                    <h4>John Silvester</h4>
+                                    <p>+20 vista badge earned</p>
+                                </div>
+                            </div>
+                        </div>';
                         echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                         echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php"><img src="./assets/img/deconnexion.png"></a></li>';
                     } else {
@@ -110,11 +132,10 @@ if (isset($_POST["submit"])) {
                 </div>
             </section>
     <?php
-        }
-        else {
+        } else {
             echo " <section class='page-section bg-dark' id='services'><div class='container'><div class='text-center'><h2 class='section-heading text-uppercase text-light'>Rejoint une equipe !</h2>";
-                            echo "<h3 class='section-subheading text-muted'>Si tu veux participer a des tournois</h3>";
-                            echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTeam.php">Créez une équipe</a></button></div></div></section>';
+            echo "<h3 class='section-subheading text-muted'>Si tu veux participer a des tournois</h3>";
+            echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTeam.php">Créez une équipe</a></button></div></div></section>';
         }
     }
     ?>
@@ -158,6 +179,23 @@ if (isset($_POST["submit"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
+    <script>
+        $(document).ready(function() {
+            var down = false;
+            $('#bell').click(function(e) {
+                var color = $(this).text();
+                if (down) {
+                    $('#box').css('height', '0px');
+                    $('#box').css('opacity', '0');
+                    down = false;
+                } else {
+                    $('#box').css('height', 'auto');
+                    $('#box').css('opacity', '1');
+                    down = true;
+                }
+            });
+        });
+    </script>
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <!-- * *                               SB Forms JS                               * *-->
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
