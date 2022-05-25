@@ -9,10 +9,11 @@
 require_once './function.php';
 session_start();
 
-tournoiDateExpired();
 $allTournoi = getAllTournoi();
+if($allTournoi == null){
+    $allTournoi = array();
+}
 
-tournoiDateExpired();
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
@@ -28,7 +29,7 @@ if (isset($_POST["submit"])) {
 }
 
 if (isset($_POST["invAccept"])) {
-    if (filter_has_var(INPUT_POST, 'nomEquipe')) {
+    if (filter_has_var(INPUT_POST, 'nomEquip  e')) {
         $equipe = filter_input(INPUT_POST, "nomEquipe", FILTER_SANITIZE_STRING);
     }
     if (addEquipe($equipe, $_SESSION["pseudo"] ) == false) {
@@ -176,7 +177,6 @@ if (isset($_POST["leaveTeam"])) {
                         displayTeam($team);
                         ?>
                     </div>
-                    +
                     <form action="#" method="POST">
                         <input type="text" class="form-control rounded" name="searchPlayer" placeholder="Chercher un joueur">
                         <input type="submit" class="text-black" name="submit" value="Invitation">

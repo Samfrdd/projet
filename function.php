@@ -407,7 +407,7 @@ function displayTeamInscrite($idTournoi){
     $arr = array();
     $sql = "SELECT `equipe`.`Nom`
 	FROM `projet`.`equipe`
-    where `equipe`.IdEquipe = (
+    where `equipe`.IdEquipe IN (
     SELECT `participation`.`idEquipe`
             FROM `projet`.`participation`
             WHERE `participation`.idTournoi = :id
