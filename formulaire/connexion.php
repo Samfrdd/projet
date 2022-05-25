@@ -10,18 +10,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 session_start();
 require_once '../db/database.php';
 
-function verifieAccountExist($pseudo,$password)
+function verifieAccountExist($pseudo)
 {
-	$sql = "SELECT `utilisateurs`.`Pseudo` ,`utilisateurs`.`MotDePasse` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = '$pseudo' And  `utilisateurs`.`MotDePasse` = '$password'";
+	$sql = "SELECT `utilisateurs`.`MotDePasse` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = :p";
 	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	try {
-		$statement->execute();
+		$statement->execute(array(':p'=>$pseudo));
 		$sql=$statement->fetch(PDO::FETCH_ASSOC,PDO::FETCH_ORI_NEXT);
 	} catch (PDOException $e) {
 		return false;
 	}
 	if ($sql != "") {
-		return true;
+		return $sql["MotDePasse"];
 	}
 	else {
 		return false;
@@ -39,8 +39,8 @@ if (isset($_POST["submit"])) {
 		$password = $_POST["password"];
 	}
 	
-	$verifie = verifieAccountExist($pseudo,$password);
-	if ($verifie == true) {
+	$verifie = verifieAccountExist($pseudo);
+	if (password_verify($password,$verifie)) {
 		$_SESSION["pseudo"] = $pseudo;
 		header("Location: ../index.php");
 		exit;

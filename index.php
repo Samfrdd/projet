@@ -10,12 +10,15 @@ require_once './function.php';
 session_start();
 
 tournoiDateExpired();
+$allTournoi = getAllTournoi();
 
+tournoiDateExpired();
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
         $pseudo = filter_input(INPUT_POST, "searchPlayer", FILTER_SANITIZE_STRING);
     }
+    $search = searchBar($pseudo);
     $pseudoExist = verifiePseudoExist($pseudo);
     if (!$pseudoExist) {
         if ($pseudo != $_SESSION["pseudo"]) {
@@ -190,7 +193,7 @@ if (isset($_POST["leaveTeam"])) {
                 <h3 class="section-subheading text-muted mb-4">Vous pouvez créez ou rejoindre des tournoi ici !</h3>
                 <?php
                 if (isset($_SESSION["pseudo"])) {
-                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
+                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournois</a></button>';
                 } else {
                 }
                 ?>

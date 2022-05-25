@@ -7,7 +7,7 @@ require_once './Classes/participation.php';
 
 
 function getAllTournoi()
-{ {
+{ 
         $arr = array();
         $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMax`,`tournoi`.`NbEquipeMin`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`, `tournoi`.`Createur`
         FROM `projet`.`tournoi` 
@@ -27,9 +27,10 @@ function getAllTournoi()
             array_push($arr, $c);
         }
 
-        // Done  
+        // Done   
         return $arr;
-    }
+    
+
 }
 
 function verifiePseudoExist($pseudo)
@@ -63,7 +64,7 @@ function addInvitation($pseudo)
     }
 }
 
-$allTournoi = getAllTournoi();
+
 
 function getTournoi($nomTournoi)
 {
@@ -215,7 +216,7 @@ function verifieIsCaptaine($pseudo)
 
 function verfieTeamRegister($nameTournoi, $pseudo)
 {
-	$sql = "SELECT `participation`.`idEquipe`
+    $sql = "SELECT `participation`.`idEquipe`
 	FROM `projet`.`participation`
 	WHERE `participation`.idEquipe = (
 		SELECT utilisateurs.idEquipe
@@ -226,37 +227,52 @@ function verfieTeamRegister($nameTournoi, $pseudo)
 		FROM projet.tournoi
 		Where tournoi.Nom = :n
 	)";
-	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-	try {
-		$statement->execute(array(":p" => $pseudo,":n" => $nameTournoi));
-		$resultat = $statement->fetchAll();
-	} catch (PDOException $e) {
-		echo $e;
-		return false;
-	}
-	if (!$resultat) {
-		return true;
-	}
-	else {
-		return false;
-	}
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":p" => $pseudo, ":n" => $nameTournoi));
+        $resultat = $statement->fetchAll();
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    if (!$resultat) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
-function tournoiDateExpired (){
+function tournoiDateExpired()
+{
     $sql = "DELETE FROM `projet`.`tournoi`
             WHERE `tournoi`.`dateDebut` < CURDATE()";
-	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-	try {
-		$statement->execute();
-	} catch (PDOException $e) {
-		echo $e;
-		return false;
-	}
-	return true;
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute();
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    return true;
+}
+
+function searchBar($saisie)
+{
+    $sql = "SELECT utilisateurs.pseudo FROM projet.utilisateurs WHERE pseudo LIKE :s";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array('%' . $saisie . '%' => ":s"));
+        $resultat = $statement->fetchAll();
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    return $resultat;
 }
 
 // Retourne le nom de l'équipe qui nous a
-function getTeamInvitation($pseudo){
+function getTeamInvitation($pseudo)
+{
     $arr = array();
     $sql = "SELECT `equipe`.`Nom`
 	FROM `projet`.`equipe`
@@ -284,27 +300,28 @@ function getTeamInvitation($pseudo){
     return $arr;
 }
 
-function addEquipe($equipe, $utilisateur){
-    
-        $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = ( 
+function addEquipe($equipe, $utilisateur)
+{
+
+    $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = ( 
             Select IdEquipe
 	        FROM `projet`.`equipe`
 	        WHERE Nom = :e
             ) 
         WHERE `Pseudo` = :u";
-        $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        try {
-            $statement->execute(array(":e" => $equipe, ":u" => $utilisateur));
-        } catch (PDOException $e) {
-            echo $e;
-            return false;
-        }
-        // Done
-        return true;
-    
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":e" => $equipe, ":u" => $utilisateur));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
 }
 
-function addRoleJoueur($utilisateur){
+function addRoleJoueur($utilisateur)
+{
     $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = 'Joueur' WHERE `Pseudo` = :u";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
@@ -318,29 +335,30 @@ function addRoleJoueur($utilisateur){
 }
 
 
-function refuseInvitation($equipe, $utilisateur){
+function refuseInvitation($equipe, $utilisateur)
+{
     $sql = "DELETE FROM `projet`.`invitation`
     WHERE idUtilisateur = :u AND idEquipe = (
     Select IdEquipe
 	FROM `projet`.`equipe`
 	WHERE Nom = :e
     )";
-	$statement = EDatabase::prepare($sql,array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-	try {
-		$statement->execute(array(":u" => $utilisateur, ":e" => $equipe));
-	}
-	catch (PDOException $e) {
-		return false;
-	}
-	// Done
-	return true;
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":u" => $utilisateur, ":e" => $equipe));
+    } catch (PDOException $e) {
+        return false;
+    }
+    // Done
+    return true;
 }
 
-function getAllTeamRegistred($idTournoi){
-
+function getAllTeamRegistred($idTournoi)
+{
 }
 
-function leaveTeamRole($utilisateur){
+function leaveTeamRole($utilisateur)
+{
     $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = null WHERE `Pseudo` = :u";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
@@ -353,7 +371,8 @@ function leaveTeamRole($utilisateur){
     return true;
 }
 
-function leaveTeamId($utilisateur){
+function leaveTeamId($utilisateur)
+{
     $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = null WHERE `Pseudo` = :u";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
