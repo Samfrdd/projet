@@ -12,7 +12,7 @@ class ETournoi{
      * @param string $InNickname Son nickname
      * $name, $maxPlayer, $minPlayer, $price, $jeux, $date
      */
-    public function __construct($INCode = -1,$InName = "", $InMaxPlayer = "", $InMinPlayer = "",$InNbJoueurEquipe = "", $InPrice = "", $InDate = "", $InJeux = "")
+    public function __construct($INCode = -1,$InName = "", $InMaxPlayer = "", $InMinPlayer = "",$InNbJoueurEquipe = "", $InPrice = "", $InDate = "", $InJeux = "", $InCreateur)
     {
         $this->nom = $InName;
         $this->maxPlayer = $InMaxPlayer;
@@ -22,6 +22,8 @@ class ETournoi{
         $this->jeux = $InJeux;
         $this->date = $InDate;
         $this->code = $INCode;
+        $this->createur = $InCreateur;
+
         
 
 
@@ -47,5 +49,8 @@ class ETournoi{
     public $date;
 
     public $code;
+    
+    public $createur;
+    
 
 }

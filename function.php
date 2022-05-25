@@ -2,11 +2,12 @@
 
 require_once './db/database.php';
 require_once './Classes/tournoi.php';
+require_once './Classes/invitationInfo.php';
+
 function getAllTournoi()
 {
     $arr = array();
-
-    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`
+    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`, `tournoi`.`Createur`
         FROM `projet`.`tournoi` 
         INNER JOIN jeux ON jeux.idJeux = tournoi.idJeux";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -19,12 +20,12 @@ function getAllTournoi()
     while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
         // On crée l'objet EClient en l'initialisant avec les données provenant
         // de la base de données
-        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux']);
+        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux'], $row['Createur']);
         // On place l'objet EClient créé dans le tableau
         array_push($arr, $c);
     }
 
-    // Done
+    // Done  
     return $arr;
 }
 
@@ -63,7 +64,7 @@ function addInvitation($pseudo)
 
 function getTournoi($nomTournoi)
 {
-    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`
+    $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMin`,`tournoi`.`NbEquipeMax`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`, `tournoi`.`Createur`
     FROM `projet`.`tournoi` 
     INNER JOIN jeux ON jeux.idJeux = tournoi.idJeux
     WHERE tournoi.nom = :n";
@@ -77,7 +78,7 @@ function getTournoi($nomTournoi)
     while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
         // On crée l'objet EClient en l'initialisant avec les données provenant
         // de la base de données
-        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux']);
+        $c = new ETournoi(intval($row['idTournoi']), $row['Nom'], intval($row['NbEquipeMin']), intval($row['NbEquipeMax']), intval($row['NbJoueurEquipe']), intval($row['Prix']), $row['DateDebut'], $row['NomJeux'], $row['Createur']);
         // On place l'objet EClient créé dans le tableau
     }
 
@@ -256,11 +257,126 @@ function searchBar($saisie)
     $sql = "SELECT utilisateurs.pseudo FROM projet.utilisateurs WHERE pseudo LIKE :s";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array('%'.$saisie.'%' => ":s"));
+        $statement->execute(array('%' . $saisie . '%' => ":s"));
         $resultat = $statement->fetchAll();
     } catch (PDOException $e) {
         echo $e;
         return false;
     }
     return $resultat;
+}
+
+// Retourne le nom de l'équipe qui nous a
+function getTeamInvitation($pseudo)
+{
+    $arr = array();
+    $sql = "SELECT `equipe`.`Nom`
+	FROM `projet`.`equipe`
+    where `equipe`.IdEquipe IN (
+    SELECT `invitation`.`idEquipe`
+            FROM `projet`.`invitation`
+            WHERE `invitation`.idUtilisateur = :p
+    )";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":p" => $pseudo));
+    } catch (PDOException $e) {
+        return false;
+    }
+    // On parcoure les enregistrements 
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
+        // On crée l'objet EClient en l'initialisant avec les données provenant
+        // de la base de données
+        $c = new EInvitationInfo($row['Nom']);
+        // On place l'objet EClient créé dans le tableau
+        array_push($arr, $c);
+    }
+
+    // Done  
+    return $arr;
+}
+
+function addEquipe($equipe, $utilisateur)
+{
+
+    $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = ( 
+            Select IdEquipe
+	        FROM `projet`.`equipe`
+	        WHERE Nom = :e
+            ) 
+        WHERE `Pseudo` = :u";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":e" => $equipe, ":u" => $utilisateur));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
+}
+
+function addRoleJoueur($utilisateur)
+{
+    $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = 'Joueur' WHERE `Pseudo` = :u";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":u" => $utilisateur));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
+}
+
+
+function refuseInvitation($equipe, $utilisateur)
+{
+    $sql = "DELETE FROM `projet`.`invitation`
+    WHERE idUtilisateur = :u AND idEquipe = (
+    Select IdEquipe
+	FROM `projet`.`equipe`
+	WHERE Nom = :e
+    )";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":u" => $utilisateur, ":e" => $equipe));
+    } catch (PDOException $e) {
+        return false;
+    }
+    // Done
+    return true;
+}
+
+function getAllTeamRegistred($idTournoi)
+{
+}
+
+function leaveTeamRole($utilisateur)
+{
+    $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = null WHERE `Pseudo` = :u";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":u" => $utilisateur));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
+}
+
+function leaveTeamId($utilisateur)
+{
+    $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = null WHERE `Pseudo` = :u";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":u" => $utilisateur));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
 }

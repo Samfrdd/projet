@@ -337,9 +337,9 @@ input.text.w3lpass {
 input[type="submit"] {
     font-size: .9em;
     color: #fff;
-    background: rgb(255, 200, 0);
+    /* background: rgb(255, 200, 0); */
     outline: none;
-    border: 1px solid rgb(255, 200, 0);
+    /* border: 1px solid rgb(255, 200, 0); */
     cursor: pointer;
     padding: 0.9em;
     -webkit-appearance: none;

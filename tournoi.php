@@ -9,30 +9,30 @@ $ab = "";
 $nomTournoi = $_GET["var"];
 $connection = "";
 $nameTournoi = $_GET["var"];
-if (Isset($_SESSION["pseudo"])) {
-    $connection = "<form action='./formulaire/inscriptionTournoi.php' method='GET'> <input type='submit' name='submit' value='S"."\'"."inscrire'><input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
-}else{
+if (isset($_SESSION["pseudo"])) {
+    $connection = "<form action='./formulaire/inscriptionTournoi.php' method='GET'> <input type='submit' name='submit' value='S" . "\'" . "inscrire'><input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
+} else {
     $connection = 'Veuillez vous connectez pour pouvoir participer a ce tournoi ! ';
 }
-if (verifieIsCaptaine($_SESSION["pseudo"])) {
-    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
-    $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
-}
-else {
-    $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! '; 
+if (isset($_SESSION["pseudo"])) {
+    if (verifieIsCaptaine($_SESSION["pseudo"])) {
+        $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+        $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
+    } else {
+        $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! ';
+    }
 }
 
-if (verfieTeamRegister($nameTournoi,$_SESSION["pseudo"])) {
-    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+if (verfieTeamRegister($nameTournoi, $_SESSION["pseudo"])) {
+    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input class="btn btn-warning text-dark" type="submit" name="submit" value="S\'inscrire">';
     $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
-}
-else {
-    $connection = 'Vous êtes déjà inscrit '; 
+} else {
+    $connection = 'Vous êtes déjà inscrit ';
 }
 
 
 $tournoi = getTournoi($nomTournoi);
-if($tournoi == array()){
+if ($tournoi == array()) {
     echo "Une erreur est survenue";
 }
 
@@ -59,7 +59,7 @@ if($tournoi == array()){
 
 <body id="page-top ">
     <!-- Navigation-->
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="./index.php">Menu</a>
@@ -70,8 +70,8 @@ if($tournoi == array()){
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                     <?php
-                    if (Isset($_SESSION["pseudo"])) {
-                        echo '<li class="nav-item"><a class="nav-link" href="#">'.$_SESSION["pseudo"].'</a></li>';
+                    if (isset($_SESSION["pseudo"])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                     } else {
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
@@ -83,30 +83,30 @@ if($tournoi == array()){
         </div>
     </nav>
     <!-- Masthead-->
-    <header class="masthead" style="background-image: url(./assets/img/<?=$tournoi->jeux?>.jpg)">
+    <header class="masthead" style="background-image: url(./assets/img/<?= $tournoi->jeux ?>.jpg)">
 
     </header>
 
     <section class="page-section bg-dark" id="services">
         <div class="container">
             <div class="text-center">
-                <h2 class="section-heading text-uppercase text-light"><?=$tournoi->nom ?></h2>
-                <h3 class="section-subheading text-muted"><?= $connection?></h3>
+                <h2 class="section-heading text-uppercase text-light"><?= $tournoi->nom ?></h2>
+                <h3 class="section-subheading text-muted"><?= $connection ?></h3>
             </div>
             <div class="text-light">
-                    <h3>Cash prize : <?=$tournoi->prix?> </h3>
-                    <h3>Nombre d'équipe minimum  : <?=$tournoi->minPlayer?> </h3>
-                    <h3>Nombre d'équipe actuelle  : <?= nbTeamRegister($tournoi->nom); ?>/<?=$tournoi->maxPlayer?> </h3>
-                    <h3>Nombre de joueur par équipe : <?=$tournoi->nbJoueurEquipe?> </h3>
-                    <h3>Jeux du tournoi  : <?=$tournoi->jeux?> </h3>
-                    <h3>Date du tournoi  : <?=$tournoi->date?> </h3>
-                    
-                    
+                <h3>Cash prize : <?= $tournoi->prix ?> </h3>
+                <h3>Nombre d'équipe minimum : <?= $tournoi->minPlayer ?> </h3>
+                <h3>Nombre d'équipe actuelle : <?= nbTeamRegister($tournoi->nom); ?>/<?= $tournoi->maxPlayer ?> </h3>
+                <h3>Nombre de joueur par équipe : <?= $tournoi->nbJoueurEquipe ?> </h3>
+                <h3>Jeux du tournoi : <?= $tournoi->jeux ?> </h3>
+                <h3>Date du tournoi : <?= $tournoi->date ?> </h3>
+
+
 
             </div>
         </div>
     </section>
-    
+
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
