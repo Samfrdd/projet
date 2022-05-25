@@ -357,9 +357,9 @@ function getAllTeamRegistred($idTournoi)
 {
 }
 
-function leaveTeamRole($utilisateur)
+function leaveTeam($utilisateur)
 {
-    $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = null WHERE `Pseudo` = :u";
+    $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = null,`IdEquipe` = null WHERE `Pseudo` = :u";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
         $statement->execute(array(":u" => $utilisateur));
@@ -371,12 +371,12 @@ function leaveTeamRole($utilisateur)
     return true;
 }
 
-function leaveTeamId($utilisateur)
+function deleteTeam($idEquipe)
 {
-    $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = null WHERE `Pseudo` = :u";
+    $sql = "DELETE FROM `projet`.`equipe` WHERE `idEquipe` = :i";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":u" => $utilisateur));
+        $statement->execute(array(":i" => $idEquipe));
     } catch (PDOException $e) {
         echo $e;
         return false;
@@ -429,4 +429,32 @@ function displayTeamInscrite($idTournoi){
 
     // Done  
     return $arr;
+}
+function updateTeam($idEquipe)
+{
+    $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = null, `role` = null WHERE `idEquipe` = :i";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":i" => $idEquipe));
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    // Done
+    return true;
+}
+
+function getIdTeam($utilisateur){
+    $sql = "SELECT `utilisateurs`.`idEquipe`
+    FROM `projet`.`utilisateurs`
+    WHERE `utilisateurs`.pseudo = :p ";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute(array(":p" => $utilisateur));
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    return $resultat["idEquipe"];
 }
