@@ -35,7 +35,8 @@ if (isset($_POST['submit'])) {
     // Vérification du champs quantité
     if (filter_has_var(INPUT_POST, 'maxPlayer')) {
         $maxPlayer = filter_input(INPUT_POST, 'maxPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-        if ($maxPlayer === false || floatval($maxPlayer) == 0 || floatval($maxPlayer) % 2 != 0)
+        if ($maxPlayer === false || floatval($maxPlayer) == 0)
+        // || floatval($maxPlayer) % 2 != 0
             $bValid = false;
     } else {
         $bValid = false;
@@ -90,7 +91,7 @@ if (isset($_POST['submit'])) {
     // Est-ce qu'on a rencontré une erreur?
             if ($bValid && verifyTournoiExist($name) == true) {
                 // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-                if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($nbJoueurEquipe), floatval($price), $jeux, $date)) {
+                if (!addTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($nbJoueurEquipe), floatval($price), $jeux, $date, $_SESSION["pseudo"])) {
                     echo "asda";
                 } else {
                     header("Location: ../index.php");
@@ -129,12 +130,12 @@ function getJeux()
 $allJeux = getJeux();
 
 
-function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeux, $date)
+function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeux, $date, $createur)
 {
-    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `NbJoueurEquipe`, `Prix`, `DateDebut`, `IdJeux`)VALUES(:n,:mi,:ma,:nb,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ))";
+    $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMin`, `NbEquipeMax`, `NbJoueurEquipe`, `Prix`, `DateDebut`, `IdJeux`,`Createur` )VALUES(:n,:mi,:ma,:nb,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ), :c)";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":nb" => $nbJoueurEquipe, ":p" => $price, ":j" => $jeux, ":d" => $date));
+        $statement->execute(array(":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":nb" => $nbJoueurEquipe, ":p" => $price, ":j" => $jeux, ":d" => $date, ":c" => $createur));
     } catch (PDOException $e) {
         echo $e;
         return false;

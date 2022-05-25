@@ -1,8 +1,6 @@
 <!--
-Author: Colorlib
-Author URL: https://colorlib.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
+Auteur: Sam / Anthony
+Description : Formulaire de creation d'une equipe
 -->
 
 <?php
@@ -115,7 +113,7 @@ if (isset($_POST["submit"])) {
 <html>
 
 <head>
-    <title>Creative Colorlib SignUp Form</title>
+    <title>Creation Team</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="application/x-javascript">
@@ -138,14 +136,14 @@ if (isset($_POST["submit"])) {
 <body>
     <!-- main -->
     <div class="main-w3layouts wrapper">
-        <h1>Crée un compte</h1>
+        <h1>Crée une equipe</h1>
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
                     <input class="text" type="text" name="Nom" placeholder="Nom d'équipe" required="">
                     <input type="submit" name="submit" value="Inscription">
                 </form>
-                <p>Vous avez deja un compte ? <a href="./connexion.php"> Connectez-vous !</a></p>
+                <p><a href="../index.php"> Retour</a></p>
             </div>
         </div>
     </div>

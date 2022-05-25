@@ -8,7 +8,9 @@
 
 require_once './function.php';
 session_start();
-tournoiDateExpired();
+// tournoiDateExpired();
+
+
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
@@ -22,7 +24,34 @@ if (isset($_POST["submit"])) {
     }
 }
 
+if (isset($_POST["invAccept"])) {
+    if (filter_has_var(INPUT_POST, 'nomEquipe')) {
+        $equipe = filter_input(INPUT_POST, "nomEquipe", FILTER_SANITIZE_STRING);
+    }
+    if (addEquipe($equipe, $_SESSION["pseudo"] ) == false) {
+        echo "Un probleme est survenue";
+    }else{
+        if(addRoleJoueur($_SESSION["pseudo"]) == false){
+            echo "Un probleme est survenue";
+        }else{
+            refuseInvitation($equipe, $_SESSION["pseudo"]);
+        }
+    }
+   // acceptInvation($equipe, $_SESSION["pseudo"]);
+}
 
+if (isset($_POST["invDenied"])) {
+    if (filter_has_var(INPUT_POST, 'nomEquipe')) {
+        $equipe = filter_input(INPUT_POST, "nomEquipe", FILTER_SANITIZE_STRING);
+    }
+    refuseInvitation($equipe, $_SESSION["pseudo"]);
+   // acceptInvation($equipe, $_SESSION["pseudo"]);
+}
+
+if (isset($_POST["leaveTeam"])) {
+    leaveTeamRole($_SESSION["pseudo"]);
+
+}
 
 
 ?>
@@ -36,22 +65,24 @@ if (isset($_POST["submit"])) {
     <meta name="author" content="" />
     <title>Tournoi</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+
+
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
-
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <link href="css/styles.css" rel="stylesheet" />
     <link href="css/notif.css" rel="stylesheet" />
     <link href="./formulaire/css/style.css" rel="stylesheet" type="text/css" media="all" />
+
 </head>
 
 <body id="page-top ">
@@ -69,22 +100,28 @@ if (isset($_POST["submit"])) {
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Tournoi</a></li>
                     <?php
                     if (isset($_SESSION["pseudo"])) {
+                        $invitation = getTeamInvitation($_SESSION["pseudo"]);
                         echo '<div class="icon mr-2" id="bell"> <img src="https://i.imgur.com/AC7dgLA.png" alt=""> </div>
-                        <div class="notifications" id="box">
-                            <h2>Notifications - <span>2</span></h2>
-                            <div class="notifications-item"> <img src="https://i.imgur.com/uIgDDDd.jpg" alt="img">
-                                <div class="text">
-                                    <h4>Samso aliao</h4>
-                                    <p>Samso Nagaro Like your home work</p>
-                                </div>
-                            </div>
-                            <div class="notifications-item"> <img src="https://img.icons8.com/flat_round/64/000000/vote-badge.png" alt="img">
-                                <div class="text">
-                                    <h4>John Silvester</h4>
-                                    <p>+20 vista badge earned</p>
-                                </div>
-                            </div>
-                        </div>';
+                        <div class="notifications" id="box">';
+                        echo '<h2>Notifications - <span>' . count($invitation) . '</span></h2>';
+                        
+                        foreach ($invitation as $team) {
+                            echo '<form id="notif" action="#" method="POST">';
+                            echo '<div class="notifications-item"> <img src="./assets/img/equipe.png" alt="img">';
+                            echo   '<div class="text">';
+                            echo '<h4>' . $team->nom . '</h4>';
+                            echo '<input class="btn  btn-success btn-sm mr-3" style="width: 90px; padding: 5px; font-size: 0.8rem; color: rgb(232, 230, 227) !important;
+                            background-color: rgb(20, 108, 67)!important;
+                            border-color: rgb(32, 175, 109)!important;" type="submit" name="invAccept" value="Accepter">';
+                            echo '<input class="btn  btn-danger btn-sm !important"  style="width: 90px; padding: 5px; font-size: 0.8rem;    color: #fff;
+                            background-color: #dc3545;
+                            border-color: #dc3545;" type="submit" name="invDenied" value="Refuser">';
+                            echo '<input type="hidden" name="nomEquipe" value="' . $team->nom . '">';
+                            echo '</div>  </div> ';
+                            echo '</form>';
+                        }
+                    
+                        echo '</div>';
                         echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                         echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php"><img src="./assets/img/deconnexion.png"></a></li>';
                     } else {
@@ -114,20 +151,26 @@ if (isset($_POST["submit"])) {
                         <?php
                         if (verifieTeam($_SESSION["pseudo"])) {
                             echo "<h2 class='section-heading text-uppercase text-light'>" . verifieTeam($_SESSION["pseudo"]) . "</h2>";
-                            echo "<h3 class='section-subheading text-muted'>Votre équipe</h3>";
+                            echo "<h3 class='section-subheading text-muted mb-1'>Votre équipe</h3>";
+                            echo '<form id="notif" action="#" method="POST">';
+                            echo '<input class="btn  btn-danger btn-sm mb-7 "  style="width: 200px; padding: 10px; font-size: 1rem;    color: #fff;
+                            background-color: #dc3545;
+                            border-color: #dc3545;" type="submit" name="leaveTeam" value="Quitter l\'équipe">';
+                            echo '</form>';
                         }
                         ?>
 
 
                     </div>
-                    <div class="row text-center">
+                    <div class="row text-center mb-5">
                         <?php
                         displayTeam($team);
                         ?>
                     </div>
+                    +
                     <form action="#" method="POST">
-                        <input type="text" name="searchPlayer" placeholder="Chercher un joueur">
-                        <input type="submit" name="submit" value="Invitation">
+                        <input type="text" class="form-control rounded" name="searchPlayer" placeholder="Chercher un joueur">
+                        <input type="submit" class="text-black" name="submit" value="Invitation">
                     </form>
                 </div>
             </section>
@@ -153,7 +196,7 @@ if (isset($_POST["submit"])) {
                 ?>
 
             </div>
-            <div class="row" style="">
+            <div class="row" style="height: 100vh">
                 <?php
                 foreach ($allTournoi as $tournoi) {
                     echo '<div class="col-lg-4 col-sm-6 mb-4">';
@@ -165,7 +208,7 @@ if (isset($_POST["submit"])) {
                     echo  '<img class="img-fluid" src="assets/img/' . $tournoi->jeux . '.jpg" alt="..." />';
                     echo '</a>';
                     echo  '<div class="portfolio-caption">';
-                    echo '<div class="portfolio-caption-heading">' . $tournoi->nom . '</div>';
+                    echo '<div class="portfolio-caption-heading  text-black">' . $tournoi->nom . '</div>';
                     echo '<div class="portfolio-caption-subheading text-muted">Cash prize : ' . $tournoi->prix . ' CHF</div>';
                     echo '</div>';
                     echo '</div>';
