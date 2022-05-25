@@ -32,7 +32,7 @@ function addUsers($pseudo, $password)
 	$sql = "INSERT INTO `projet`.`utilisateurs` (`Pseudo`,`MotDePasse`) VALUES(:p,:m)";
 	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	try {
-		$statement->execute(array(":p" => $pseudo, ":m" => $password));
+		$statement->execute(array(":p" => $pseudo, ":m" => password_hash($password,PASSWORD_DEFAULT,['cost'=>14])));
 	} catch (PDOException $e) {
 		return false;
 	}

@@ -8,12 +8,16 @@
 
 require_once './function.php';
 session_start();
+
+$allTournoi = getAllTournoi();
+
 tournoiDateExpired();
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
         $pseudo = filter_input(INPUT_POST, "searchPlayer", FILTER_SANITIZE_STRING);
     }
+    $search = searchBar($pseudo);
     $pseudoExist = verifiePseudoExist($pseudo);
     if (!$pseudoExist) {
         if ($pseudo != $_SESSION["pseudo"]) {
@@ -110,11 +114,10 @@ if (isset($_POST["submit"])) {
                 </div>
             </section>
     <?php
-        }
-        else {
+        } else {
             echo " <section class='page-section bg-dark' id='services'><div class='container'><div class='text-center'><h2 class='section-heading text-uppercase text-light'>Rejoint une equipe !</h2>";
-                            echo "<h3 class='section-subheading text-muted'>Si tu veux participer a des tournois</h3>";
-                            echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTeam.php">Créez une équipe</a></button></div></div></section>';
+            echo "<h3 class='section-subheading text-muted'>Si tu veux participer a des tournois</h3>";
+            echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTeam.php">Créez une équipe</a></button></div></div></section>';
         }
     }
     ?>
@@ -126,7 +129,7 @@ if (isset($_POST["submit"])) {
                 <h3 class="section-subheading text-muted mb-4">Vous pouvez créez ou rejoindre des tournoi ici !</h3>
                 <?php
                 if (isset($_SESSION["pseudo"])) {
-                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournoi</a></button>';
+                    echo  '<button type="button" class="btn btn-primary mb-4"> <a class="nav-link text-black" href="./formulaire/creationTournoi.php">Créez un tournois</a></button>';
                 } else {
                 }
                 ?>
