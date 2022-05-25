@@ -17,7 +17,7 @@ if (isset($_POST["submit"])) {
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
         $pseudo = filter_input(INPUT_POST, "searchPlayer", FILTER_SANITIZE_STRING);
     }
-    $search = searchBar($pseudo);
+    //$search = searchBar($pseudo);
     $pseudoExist = verifiePseudoExist($pseudo);
     if (!$pseudoExist) {
         if ($pseudo != $_SESSION["pseudo"]) {
@@ -51,8 +51,14 @@ if (isset($_POST["invDenied"])) {
 }
 
 if (isset($_POST["leaveTeam"])) {
-    leaveTeamRole($_SESSION["pseudo"]);
-
+    if (verifieIsCaptaine($_SESSION["pseudo"])) {
+        $idTeam = getIdTeam($_SESSION["pseudo"]);
+        updateTeam($idTeam);
+        deleteTeam($idTeam);
+    }
+    else {
+        leaveTeam($_SESSION["pseudo"]);
+    }
 }
 
 
