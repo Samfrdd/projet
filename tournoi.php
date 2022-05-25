@@ -9,33 +9,48 @@ $ab = "";
 $nomTournoi = $_GET["var"];
 $connection = "";
 $nameTournoi = $_GET["var"];
+
+
+$tournoi = getTournoi($nomTournoi);
+
+$participant = displayTeamInscrite($tournoi->code);
+if ($tournoi == array()) {
+    echo "Une erreur est survenue";
+}
+
+
 if (isset($_SESSION["pseudo"])) {
     $connection = "<form action='./formulaire/inscriptionTournoi.php' method='GET'> <input type='submit' name='submit' value='S" . "\'" . "inscrire'><input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
 } else {
     $connection = 'Veuillez vous connectez pour pouvoir participer a ce tournoi ! ';
 }
-if (isset($_SESSION["pseudo"])) {
-    if (verifieIsCaptaine($_SESSION["pseudo"])) {
-        $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+
+if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
+    $connection = '<form action="./formulaire/deleteTournoi.php" method="GET"> <input class="btn btn-danger text-dark col-lg-1" type="submit" name="delete" value="Supprimer"> ';
+    $connection .= '<a class="btn btn-warning text-dark col-lg-1" href="./formulaire/modificationTournoi.php?tournoi=' . $tournoi->code . '">Modifier</a>';
+    $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->code'> </form>";
+} else {
+    if (isset($_SESSION["pseudo"])) {
+        if (verifieIsCaptaine($_SESSION["pseudo"])) {
+            $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input type="submit" name="submit" value="S\'inscrire">';
+            $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
+        } else {
+            $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! ';
+        }
+    }
+
+    if (verfieTeamRegister($nameTournoi, $_SESSION["pseudo"])) {
+        $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input class="btn btn-warning text-dark" type="submit" name="submit" value="S\'inscrire">';
         $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
     } else {
-        $connection = 'Veuillez demandez a votre capitaine de vous inscrire a ce tournoi ! ';
+        $connection = 'Vous êtes déjà inscrit ';
     }
 }
 
-if (verfieTeamRegister($nameTournoi, $_SESSION["pseudo"])) {
-    $connection = '<form action="./formulaire/inscriptionTournoi.php" method="GET"> <input class="btn btn-warning text-dark" type="submit" name="submit" value="S\'inscrire">';
-    $connection .= "<input type='hidden' name='nameTournoi' value='$nameTournoi'> </form>";
-} else {
-    $connection = 'Vous êtes déjà inscrit ';
+
+
+if (isset($_SESSION["pseudo"])) {
 }
-
-
-$tournoi = getTournoi($nomTournoi);
-if ($tournoi == array()) {
-    echo "Une erreur est survenue";
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -73,6 +88,7 @@ if ($tournoi == array()) {
                     if (isset($_SESSION["pseudo"])) {
                         echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                     } else {
+
                     ?>
                         <li class="nav-item"><a class="nav-link" href="./formulaire/inscripiton.php">Inscription</a></li>
                     <?php
@@ -100,9 +116,23 @@ if ($tournoi == array()) {
                 <h3>Nombre de joueur par équipe : <?= $tournoi->nbJoueurEquipe ?> </h3>
                 <h3>Jeux du tournoi : <?= $tournoi->jeux ?> </h3>
                 <h3>Date du tournoi : <?= $tournoi->date ?> </h3>
+            </div>
+        </div>
+    </section>
 
+    <section class="page-section bg-dark" id="services">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-light">Participant</h2>
+                <h3 class="section-subheading text-muted"> Nombre de participant : <?= nbTeamRegister($tournoi->nom); ?></h3>
+            </div>
+            <div class="text-light">
+                <?php
+                foreach ($participant as $equipe) {
+                    echo '<h3>' . $equipe->nom . '</h3>';
+                }
 
-
+                ?>
             </div>
         </div>
     </section>

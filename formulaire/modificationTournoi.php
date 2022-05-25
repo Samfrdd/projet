@@ -176,7 +176,7 @@ function verifyTournoiExist($name)
 <html>
 
 <head>
-    <title>Creation Tournoi</title>
+    <title>Modification Tournoi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="application/x-javascript">
@@ -200,7 +200,7 @@ function verifyTournoiExist($name)
 <body>
     <!-- main -->
     <div class="main-w3layouts wrapper">
-        <h1>Crée un Tournoi</h1>
+        <h1>Modifier votre tournoi</h1>
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">

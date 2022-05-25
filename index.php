@@ -8,8 +8,8 @@
 
 require_once './function.php';
 session_start();
-// tournoiDateExpired();
 
+tournoiDateExpired();
 
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
