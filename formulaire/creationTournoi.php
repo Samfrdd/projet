@@ -149,15 +149,15 @@ function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeu
 verifyTournoiExist($name);
 function verifyTournoiExist($name)
 {
-    $sql = "SELECT `tournoi`.`Nom` FROM `projet`.`tournoi` Where `tournoi`.`Nom` = '$name'";
+    $sql = "SELECT `tournoi`.`Nom` FROM `projet`.`tournoi` Where `tournoi`.`Nom` = :n";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute();
-        $sql = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+        $statement->execute(array(":n" => $name));
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
     } catch (PDOException $e) {
         return false;
     }
-    if ($sql == "") {
+    if ($resultat == "" ||$resultat == $name ) {
         return true;
     } else {
         return false;
