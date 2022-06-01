@@ -8,9 +8,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <?php
 session_start();
 require_once '../db/database.php';
-
-
-
+$erreur = "";
 $id = $_GET["nameTournoi"];
 function deleteTournoi($id)
 {
@@ -78,10 +76,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $id)) {
 				header("Location: ../index.php");
 				exit;
 			} else {
-				echo "Il y'a eu un probleme avec la supression du tournoi";
+				$erreur = "Il y'a eu un probleme avec la supression du tournoi";
 			}
 		} else {
-			echo 'Il y a un probleme avec la supression';
+			$erreur = 'Il y a un probleme avec la supression du tournoi';
 		}
 	}
 }
@@ -128,6 +126,11 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $id)) {
 						<input type="checkbox"  name="valider" required>
 						Voulez vous vraiment supprimez votre tournoi ?
 					</label>
+					<?php
+					if ($erreur != "") {
+                        echo   '<div class="alert alert-danger" role="alert">' . $erreur . '</div>';
+                    }
+					?>
 					<input class="btn btn-warning mb-4 text-black" type="submit" name="delete" value="Supprimer">
 				</form>
 			</div>
