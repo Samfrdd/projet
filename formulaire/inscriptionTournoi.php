@@ -8,7 +8,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <?php
 session_start();
 require_once '../db/database.php';
-
+$erreur = "";
 function getTeam($pseudo)
 {
 	$sql = "SELECT `utilisateurs`.`Pseudo`,`utilisateurs`.`Role`
@@ -106,16 +106,16 @@ if (isset($_POST["inscription"])) {
 		$bValid = false;
 
 	// Est-ce qu'on a rencontré une erreur?
-	if ($bValid && verfieTeamRegister($_GET["nameTournoi"],$_SESSION["pseudo"]) == true) {
+	if (verfieTeamRegister($_GET["nameTournoi"],$_SESSION["pseudo"]) == true) {
 		// echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-		if (!addTeamParticipation($_GET["nameTournoi"],$_SESSION["pseudo"])) {
-			echo "asda";
+		if (!addTeamParticipation($_GET["nameTournoi"],$_SESSION["pseudo"]) || !$valider) {
+			$erreur = "vous devez accepter les conditons d'utilisations";
 		} else {
 			header("Location: ../index.php");
 			exit;
 		}
 	} else {
-		echo 'Vous êtes déjà inscrit a se tournoi';
+		$erreur = 'Vous êtes déjà inscrit a se tournoi';
 	}
 }
 
@@ -161,7 +161,12 @@ if (isset($_POST["inscription"])) {
 						<input type="checkbox" name="valider" required>
 						Voulez-vous participer a se tournoi.
 					</label>
-					<input type="submit" class="btn btn-warning mb-4 text-black" name="inscription" value="Inscription">
+					<?php
+					if ($erreur != "") {
+                        echo   '<div class="alert alert-danger" role="alert">' . $erreur . '</div>';
+                    }
+					?>
+					<input type="submit"  class="btn btn-warning mb-4 text-black" name="inscription" value="Inscription">
 				</form>
 			</div>
 		</div>
