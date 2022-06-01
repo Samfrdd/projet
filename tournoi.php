@@ -16,7 +16,7 @@ $tournoi = getTournoi($nomTournoi);
 $participant = displayTeamInscrite($tournoi->code);
 if ($tournoi == array()) {
     echo "Une erreur est survenue";
-}
+} 
 
 
 if (isset($_SESSION["pseudo"])) {
@@ -26,9 +26,13 @@ if (isset($_SESSION["pseudo"])) {
 }
 
 if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
-    $connection = '<form action="./formulaire/deleteTournoi.php" method="GET"> <input class="btn btn-danger text-dark col-lg-1" type="submit" name="delete" value="Supprimer"> ';
-    $connection .= '<a class="btn btn-warning text-dark col-lg-1" href="./formulaire/modificationTournoi.php?tournoi=' . $tournoi->code . '">Modifier</a>';
+    $connection = '<table><tr style="width : Auto"><form action="./formulaire/deleteTournoi.php" method="GET"> <input class="btn btn-danger text-dark col-lg-1" type="submit" name="delete" value="Supprimer"> ';
     $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->code'> </form>";
+    $connection .= "<&nbsp><&nbsp><&nbsp>";
+    $connection .= '<form action="./formulaire/modificationTournoi.php" method="GET"> <input class="btn btn-warning text-dark col-lg-1" type="submit" name="modifier" value="Modifier"> ';
+    $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->code'> </form></tr></table>";
+
+   
 } else {
     if (isset($_SESSION["pseudo"])) {
         if (verifieIsCaptaine($_SESSION["pseudo"])) {
