@@ -5,7 +5,7 @@ require_once './Classes/tournoi.php';
 require_once './Classes/invitationInfo.php';
 require_once './Classes/participation.php';
 
-
+//récupère les infromation de tous les tournois
 function getAllTournoi()
 { 
         $arr = array();
@@ -33,6 +33,7 @@ function getAllTournoi()
 
 }
 
+// vérifie si le pseudo de l'utlisateur existe
 function verifiePseudoExist($pseudo)
 {
     $sql = "SELECT `utilisateurs`.`Pseudo` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = '$pseudo'";
@@ -50,6 +51,7 @@ function verifiePseudoExist($pseudo)
     }
 }
 
+// fait un invitiation a un joueur 
 function addInvitation($pseudo)
 {
     $sql = "INSERT INTO `projet`.`invitation` (`idUtilisateur`,`idEquipe`,`date`)
@@ -65,7 +67,7 @@ function addInvitation($pseudo)
 }
 
 
-
+// récupère les informations d'un tournois
 function getTournoi($nomTournoi)
 {
     $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMax`,`tournoi`.`NbEquipeMin`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`, `tournoi`.`Createur`
@@ -90,6 +92,7 @@ function getTournoi($nomTournoi)
     return $c;
 }
 
+// vérifie si l'utilisaeur possède un role
 function verifieRole($Nom)
 {
     $sql = "SELECT `utilisateurs`.`Role` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = :n";
@@ -107,7 +110,7 @@ function verifieRole($Nom)
         return false;
     }
 }
-
+// récupère les joueurs de l'équipe
 function getTeam($pseudo)
 {
     $sql = "SELECT `utilisateurs`.`Pseudo`,`utilisateurs`.`Role`
@@ -128,6 +131,7 @@ function getTeam($pseudo)
     return $resultat;
 }
 
+// affiche l'équipe
 function displayTeam($Team)
 {
     foreach ($Team as $array) {
@@ -147,7 +151,7 @@ function displayTeam($Team)
     }
 }
 
-
+//vérifie si la team exist
 function verifieTeam($pseudo)
 {
     $sql = "SELECT `equipe`.`Nom`
@@ -171,6 +175,7 @@ function verifieTeam($pseudo)
     }
 }
 
+// nombre d'équipe inscrit a un tournoi
 function nbTeamRegister($tournoi)
 {
     $sql = "SELECT count(`participation`.`IdTournoi`) AS nbTeam
@@ -194,6 +199,7 @@ function nbTeamRegister($tournoi)
     }
 }
 
+// vérifie si l'utilisateur a le role capitaine
 function verifieIsCaptaine($pseudo)
 {
     $sql = "SELECT `utilisateurs`.`Role`
@@ -214,6 +220,8 @@ function verifieIsCaptaine($pseudo)
     }
 }
 
+
+//vérifie si l'équipe est déja inscrit a un tournoi
 function verfieTeamRegister($nameTournoi, $pseudo)
 {
     $sql = "SELECT `participation`.`idEquipe`
@@ -242,6 +250,7 @@ function verfieTeamRegister($nameTournoi, $pseudo)
     }
 }
 
+// récupère les tournois avec une date expirée
 function getTournoiDateExpired(){
     $sql = "SELECT tournoi.idTournoi FROM `projet`.`tournoi`
             WHERE `tournoi`.`dateDebut` < CURDATE()";
@@ -256,6 +265,7 @@ function getTournoiDateExpired(){
     return $resultat;
 }
 
+// supprime les participants d'un tournoi
 function deleteParticipant($id)
 {
 	$sql = "DELETE FROM `projet`.`participation`
@@ -270,6 +280,7 @@ function deleteParticipant($id)
 	return true;
 }
 
+// supprime les tournois qui on un date expirée
 function deleteTournoiDateExpired()
 {
     $sql = "DELETE FROM `projet`.`tournoi`
@@ -283,6 +294,7 @@ function deleteTournoiDateExpired()
     }
     return true;
 }
+
 
 function searchBar($saisie)
 {
@@ -328,6 +340,7 @@ function getTeamInvitation($pseudo)
     return $arr;
 }
 
+// ajoute une personne a l'équipe
 function addEquipe($equipe, $utilisateur)
 {
 
@@ -348,6 +361,7 @@ function addEquipe($equipe, $utilisateur)
     return true;
 }
 
+//ajoute le role joueur 
 function addRoleJoueur($utilisateur)
 {
     $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = 'Joueur' WHERE `Pseudo` = :u";
@@ -362,7 +376,7 @@ function addRoleJoueur($utilisateur)
     return true;
 }
 
-
+//refuse une invitation
 function refuseInvitation($equipe, $utilisateur)
 {
     $sql = "DELETE FROM `projet`.`invitation`
@@ -381,10 +395,7 @@ function refuseInvitation($equipe, $utilisateur)
     return true;
 }
 
-function getAllTeamRegistred($idTournoi)
-{
-}
-
+//quitte l'equipe
 function leaveTeam($utilisateur)
 {
     $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = null,`IdEquipe` = null WHERE `Pseudo` = :u";
@@ -399,6 +410,7 @@ function leaveTeam($utilisateur)
     return true;
 }
 
+//supprime une équipe
 function deleteTeam($idEquipe)
 {
     $sql = "DELETE FROM `projet`.`equipe` WHERE `idEquipe` = :i";
@@ -413,9 +425,8 @@ function deleteTeam($idEquipe)
     return true;
 }
 
+//vérifie si il est le créateur du tournoi
 function checkCreateurTournoi($name, $idTournoi){
-   
-
     $sql = ' SELECT true  from `projet`.`tournoi` where `tournoi`.`Createur` = :n AND  `tournoi`.`idTournoi` = :t  ';
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
@@ -430,7 +441,7 @@ function checkCreateurTournoi($name, $idTournoi){
         return false;
     }
 }
-// check le sql
+// affiche les team inscrit a un tournoi
 function displayTeamInscrite($idTournoi){
     $arr = array();
     $sql = "SELECT `equipe`.`Nom`
@@ -458,6 +469,8 @@ function displayTeamInscrite($idTournoi){
     // Done  
     return $arr;
 }
+
+// met a jour les roles de personne qui on plus d'équipe
 function updateTeam($idEquipe)
 {
     $sql = "UPDATE `projet`.`utilisateurs` SET `IdEquipe` = null, `role` = null WHERE `idEquipe` = :i";
@@ -472,6 +485,7 @@ function updateTeam($idEquipe)
     return true;
 }
 
+// récupère l'id d'une équipe
 function getIdTeam($utilisateur){
     $sql = "SELECT `utilisateurs`.`idEquipe`
     FROM `projet`.`utilisateurs`
@@ -487,6 +501,7 @@ function getIdTeam($utilisateur){
     return $resultat["idEquipe"];
 }
 
+//supprime les invitations faire par une équipe
 function deleteInvitation($idEquipe){
     $sql = "DELETE FROM `projet`.`invitation`
     WHERE idEquipe = :id";
@@ -500,6 +515,8 @@ function deleteInvitation($idEquipe){
 	return true;
 }
 
+
+//supprime la participation aux tournois d'un équipe
 function deleteParticipation($idEquipe){
     $sql = "DELETE FROM `projet`.`participation`
     WHERE idEquipe = :id";
