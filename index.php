@@ -16,6 +16,7 @@ if ($tournoisExpired) {
     }
     deleteTournoiDateExpired();
 }
+//Recupère tous les tournois
 $allTournoi = getAllTournoi();
 
 if (isset($_POST["submit"])) {
@@ -80,22 +81,14 @@ if (isset($_POST["leaveTeam"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Tournoi</title>
-    <!-- Favicon-->
-
-
-
-    <!-- Font Awesome icons (free version)-->
+    <title>Index</title>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-
     <link href="css/styles.css" rel="stylesheet" />
     <link href="css/notif.css" rel="stylesheet" />
     <link href="./formulaire/css/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -152,11 +145,8 @@ if (isset($_POST["leaveTeam"])) {
             </div>
         </div>
     </nav>
-    <!-- Masthead-->
     <header class="masthead">
-
     </header>
-    <!-- Services-->
     <?php
     if (isset($_SESSION["pseudo"])) {
         if (!verifieRole($_SESSION["pseudo"])) {
@@ -176,8 +166,6 @@ if (isset($_POST["leaveTeam"])) {
                             echo '</form>';
                         }
                         ?>
-
-
                     </div>
                     <div class="row text-center mb-5">
                         <?php
@@ -204,7 +192,6 @@ if (isset($_POST["leaveTeam"])) {
         }
     }
     ?>
-    <!-- Portfolio Grid-->
     <section class="page-section bg-dark" id="portfolio">
         <div class="container">
             <div class="text-center">
@@ -240,11 +227,10 @@ if (isset($_POST["leaveTeam"])) {
             </div>
         </div>
     </section>
-    <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     <script>
+        // Function javascript pour pouvoir afficher et enlever les la div des notifications
         $(document).ready(function() {
             var down = false;
             $('#bell').click(function(e) {
@@ -261,10 +247,6 @@ if (isset($_POST["leaveTeam"])) {
             });
         });
     </script>
-    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-    <!-- * *                               SB Forms JS                               * *-->
-    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 </body>
 

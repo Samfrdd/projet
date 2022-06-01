@@ -1,4 +1,7 @@
 <?php 
+// Auteur : Sam Freddi
+// Description : Page pour se déconnecter, détruit la session et redirige vers la page index
+
 session_start();
 
 

@@ -1,14 +1,17 @@
+
+
 <!--
-Author: Colorlib
-Author URL: https://colorlib.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
+Author: Sam Freddi
+date : 04.05.2022
+detail : Formulaire pour s'inscrire
 -->
 
 <?php
 session_start();
 require_once '../db/database.php';
 $erreur = "";
+
+
 function getTeam($pseudo)
 {
 	$sql = "SELECT `utilisateurs`.`Pseudo`,`utilisateurs`.`Role`
@@ -29,6 +32,7 @@ function getTeam($pseudo)
 	return $resultat;
 }
 
+// affiche toute les teams
 function displayTeam($Team)
 {
 	foreach ($Team as $array) {
@@ -78,6 +82,7 @@ function verfieTeamRegister($nameTournoi, $pseudo)
 	}
 }
 
+// ajoute une equipe a la table participation (id equpe + id tournoi)
 function addTeamParticipation ($nameTournoi, $pseudo){
 	$sql = "INSERT INTO `projet`.`participation`
 	(`IdEquipe`,
@@ -126,7 +131,7 @@ if (isset($_POST["inscription"])) {
 <html>
 
 <head>
-	<title>Creative Colorlib SignUp Form</title>
+	<title>Incription au Tournoi</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -140,14 +145,11 @@ if (isset($_POST["inscription"])) {
 			window.scrollTo(0, 1);
 		}
 	</script>
-	<!-- Custom Theme files -->
 
-	<!-- //Custom Theme files -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- web font -->
+
 	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
-	<!-- //web font -->
 </head>
 
 <body>

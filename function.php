@@ -1,4 +1,9 @@
 <?php
+// Auteur : Sam Freddi / Antony Puchol
+// Description : Page qui réunis toute les functions utiles pour les page principales
+
+
+
 
 require_once './db/database.php';
 require_once './Classes/tournoi.php';

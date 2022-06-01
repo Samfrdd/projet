@@ -5,11 +5,19 @@ License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 -->
 
+<!--
+Author: Sam Freddi
+date : 04.05.2022
+detail : Formulaire pour delete un tournoi
+-->
+
 <?php
 session_start();
 require_once '../db/database.php';
 $erreur = "";
 $id = $_GET["nameTournoi"];
+
+// fonction pour delete un tournoi
 function deleteTournoi($id)
 {
 	$sql = "DELETE FROM `projet`.`tournoi`
@@ -24,6 +32,7 @@ function deleteTournoi($id)
 	return true;
 }
 
+// delete les participiants du tournoi
 function deleteParticipant($id)
 {
 	$sql = "DELETE FROM `projet`.`participation`
@@ -38,7 +47,7 @@ function deleteParticipant($id)
 	return true;
 }
 
-
+// Verifie le createur du tournoi
 function checkCreateurTournoi($name, $idTournoi)
 {
 
@@ -93,7 +102,7 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $id)) {
 <html>
 
 <head>
-	<title>Delete TOurnoi</title>
+	<title>Delete Tournoi</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="application/x-javascript">
@@ -105,14 +114,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $id)) {
 			window.scrollTo(0, 1);
 		}
 	</script>
-	<!-- Custom Theme files -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- //Custom Theme files -->
-	<!-- web font -->
 	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
-	<!-- //web font -->
 </head>
 
 <body>

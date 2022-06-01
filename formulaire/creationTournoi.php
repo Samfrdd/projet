@@ -11,7 +11,7 @@ require_once '../Classes/tournoi.php';
 require_once '../Classes/jeux.php';
 
 
-
+// Déclaration des variables
 $name = "";
 $minPlayer = "";
 $maxPlayer = "";
@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
     } else
         $bValid = false;
 
-    // Vérification du champs quantité
+    // Vérification du champs max player
     if (filter_has_var(INPUT_POST, 'maxPlayer')) {
         $maxPlayer = filter_input(INPUT_POST, 'maxPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
         if ($maxPlayer === false || floatval($maxPlayer) == 0) {
@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
     }
 
 
-    // Vérification du champs quantité
+    // Vérification du champs min player
     if (filter_has_var(INPUT_POST, 'minPlayer')) {
         $minPlayer = filter_input(INPUT_POST, 'minPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
         if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer || floatval($minPlayer) % 2 != 0) {
@@ -62,7 +62,7 @@ if (isset($_POST['submit'])) {
         $bValid = false;
     }
 
-    // Vérification du champs quantité
+    // Vérification du champs nb joueur
     if (filter_has_var(INPUT_POST, 'nbJoueurEquipe')) {
         $nbJoueurEquipe = filter_input(INPUT_POST, 'nbJoueurEquipe', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
         if ($nbJoueurEquipe === false || floatval($nbJoueurEquipe) == 0 || floatval($nbJoueurEquipe) > 5) {
@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
         $bValid = false;
     }
 
-    // Vérification du champs quantité
+    // Vérification du champs jeux
     if (filter_has_var(INPUT_POST, 'jeux')) {
         $jeux = filter_input(INPUT_POST, 'jeux', FILTER_SANITIZE_STRING);
         if ($jeux === false || strlen($jeux) == 0) {
@@ -95,7 +95,7 @@ if (isset($_POST['submit'])) {
         $bValid = false;
     }
 
-    // Vérification du champs quantité
+    // Vérification du champs date
     if (filter_has_var(INPUT_POST, 'date')) {
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
         if ($date === false || $date < date("m.d.y")) {
@@ -124,7 +124,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-
+// Function pour avoir un tableaux de tous les jeux disponible
 function getJeux()
 {
     $arr = array();
@@ -151,7 +151,7 @@ function getJeux()
 
 $allJeux = getJeux();
 
-
+// function pour ajouter un tournoi a la bdd
 function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeux, $date, $createur)
 {
     $sql = "INSERT INTO projet.tournoi ( `Nom`, `NbEquipeMax`, `NbEquipeMin`, `NbJoueurEquipe`, `Prix`, `DateDebut`, `IdJeux`,`Createur` )VALUES(:n,:ma,:mi,:nb,:p,:d,(SELECT `jeux`.`idJeux` FROM projet.jeux Where jeux.nom = :j ), :c)";
@@ -166,6 +166,7 @@ function addTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $jeu
     return true;
 }
 
+// Verifie si le nom du tournoi existe deja
 verifyTournoiExist($name);
 function verifyTournoiExist($name)
 {
@@ -185,13 +186,6 @@ function verifyTournoiExist($name)
 }
 
 
-
-
-
-// foreach ($allTournoi as $key => $tournoi) {
-//     echo $tournoi->nom;
-//     echo "<br>";
-// }
 
 ?>
 <!DOCTYPE html>

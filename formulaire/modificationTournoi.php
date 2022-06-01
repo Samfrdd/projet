@@ -1,7 +1,7 @@
 <!--
 Author: Sam Freddi
 date : 04.05.2022
-detail : Formulaire de creation d'un tournoi
+detail : Formulaire de modifcation a un tournoi
 -->
 
 <?php
@@ -11,7 +11,7 @@ require_once '../Classes/tournoi.php';
 require_once '../Classes/jeux.php';
 
 
-
+// declaration des variables
 $name = "";
 $minPlayer = "";
 $maxPlayer = "";
@@ -32,6 +32,7 @@ $id = $_GET["nameTournoi"];
 
 $tournoi = getTournoi($id);
 
+// recupère toutes les informations d'une tournoi avec son nom
 function getTournoi($nomTournoi)
 {
     $sql = "SELECT `tournoi`.`idTournoi`,`tournoi`.`Nom`,`tournoi`.`NbEquipeMax`,`tournoi`.`NbEquipeMin`,`tournoi`.`Prix`,`tournoi`.`DateDebut`,`jeux`.`Nom` AS NomJeux, `tournoi`.`NbJoueurEquipe`, `tournoi`.`Createur`
@@ -55,11 +56,7 @@ function getTournoi($nomTournoi)
     // Done
     return $c;
 }
-
-function getIdJeux($nomJeux)
-{
-}
-
+// Récupere tous les jeux
 function getJeux()
 {
     $arr = array();
@@ -86,6 +83,7 @@ function getJeux()
 
 $allJeux = getJeux();
 
+// Check si c'est bien le créateur du tournoi
 function checkCreateurTournoi($name, $idTournoi)
 {
     $sql = ' SELECT true  from `projet`.`tournoi` where `tournoi`.`Createur` = :n AND  `tournoi`.`idTournoi` = :t  ';
@@ -244,12 +242,6 @@ function verifyTournoiExist($name, $tournoi)
 
 
 
-
-// foreach ($allTournoi as $key => $tournoi) {
-//     echo $tournoi->nom;
-//     echo "<br>";
-// }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -267,13 +259,9 @@ function verifyTournoiExist($name, $tournoi)
             window.scrollTo(0, 1);
         }
     </script>
-    <!-- Custom Theme files -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
     <link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
-    <!-- //Custom Theme files -->
-    <!-- web font -->
-    <!-- //web font -->
 </head>
 
 <body>

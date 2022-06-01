@@ -13,6 +13,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 session_start();
 require_once '../db/database.php';
 $erreur = "";
+
+// Function qui vérifie si le pseudo existe deja
 function verifieAccountExist($pseudo)
 {
 	$sql = "SELECT `utilisateurs`.`MotDePasse` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = :p";
@@ -56,7 +58,7 @@ if (isset($_POST["submit"])) {
 <html>
 
 <head>
-	<title>Creative Colorlib SignUp Form</title>
+	<title>Connexion</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="application/x-javascript">
@@ -69,13 +71,8 @@ if (isset($_POST["submit"])) {
 		}
 	</script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-	<!-- Custom Theme files -->
 	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- //Custom Theme files -->
-	<!-- web font -->
 	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
-	<!-- //web font -->
 </head>
 
 <body>

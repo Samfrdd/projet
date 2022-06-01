@@ -9,6 +9,8 @@ require_once '../db/database.php';
 
 $erreur = "";
 
+
+// Function qui vérifie qu'une team existe deja
 function verifieTeamExist($Nom)
 {
     $sql = "SELECT `equipe`.`Nom` FROM `projet`.`equipe` Where `equipe`.`Nom` = :n";
@@ -27,6 +29,7 @@ function verifieTeamExist($Nom)
     }
 }
 
+// Fonction qui cree et ajoute la team a la base de donné
 function addTeam($Nom)
 {
     $sql = "INSERT INTO `projet`.`equipe` (`Nom`) VALUES(:n)";
@@ -41,6 +44,7 @@ function addTeam($Nom)
     return true;
 }
 
+// Ajoute le role capitaine au user
 function addRole($Nom)
 {
     $sql = "UPDATE `projet`.`utilisateurs` SET `Role` = 'Capitaine' WHERE `Pseudo` = :n";
@@ -55,6 +59,7 @@ function addRole($Nom)
     return true;
 }
 
+// ajoute l'id de l'équipe au user
 function addIdEquipe($Nom)
 {
     $sql = "UPDATE `projet`.`utilisateurs` 
@@ -73,6 +78,7 @@ function addIdEquipe($Nom)
     return true;
 }
 
+// verie les roles
 function verifieRole($Nom)
 {
     $sql = "SELECT `utilisateurs`.`Role` FROM `projet`.`utilisateurs` Where `utilisateurs`.`Pseudo` = :n";
@@ -127,15 +133,8 @@ if (isset($_POST["submit"])) {
             window.scrollTo(0, 1);
         }
     </script>
-    <!-- Custom Theme files -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-
-    <!-- //Custom Theme files -->
-    <!-- web font -->
-
-    <!-- //web font -->
 </head>
 
 <body>

@@ -1,4 +1,7 @@
 <?php
+// Auteur : Sam Freddi / Anthony Puchol
+// Description : Page qui affiche toute les informations sur 1 tournois
+
 require_once './db/database.php';
 require_once './function.php';
 require_once './Classes/jeux.php';
@@ -140,16 +143,8 @@ if (isset($_SESSION["pseudo"])) {
             </div>
         </div>
     </section>
-
-    <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
-    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-    <!-- * *                               SB Forms JS                               * *-->
-    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 </body>
-
 </html>
