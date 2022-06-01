@@ -179,7 +179,7 @@ if (isset($_POST["leaveTeam"])) {
                         displayTeam($team);
                         ?>
                     </div>
-                    +
+                    
                     <form action="#" method="POST">
                         <input type="text" class="form-control rounded" name="searchPlayer" placeholder="Chercher un joueur">
                         <input type="submit" class="text-black" name="submit" value="Invitation">

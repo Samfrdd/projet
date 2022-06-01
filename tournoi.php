@@ -30,7 +30,7 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
     $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->code'> </form>";
     $connection .= "<&nbsp><&nbsp><&nbsp>";
     $connection .= '<form action="./formulaire/modificationTournoi.php" method="GET"> <input class="btn btn-warning text-dark col-lg-1" type="submit" name="modifier" value="Modifier"> ';
-    $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->code'> </form></tr></table>";
+    $connection .= "<input type='hidden' name='nameTournoi' value='$tournoi->nom'> </form></tr></table>";
 
    
 } else {
