@@ -1,11 +1,7 @@
 <?php
-/**
- * @remark	Remplir correctement les constantes ci-dessous en fonction de votre base de données
- */
+// Fichier de paramètre
+// Root sans mots de passe
 
-/*
- * @brief Connection constants
- */
 define('EDB_DBTYPE', "mysql");
 define('EDB_DBNAME', "projet");
 define('EDB_HOST', "127.0.0.1");

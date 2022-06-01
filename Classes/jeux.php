@@ -1,16 +1,14 @@
 <?php
 
 /**
- * Classe container client
+ * Classe container jeux
  */
 class EJeux{
 
     /**
      * ctor 
      *
-     * @param string $InEmail l'email de l'utilisateur
-     * @param string $InNickname Son nickname
-     * $name, $maxPlayer, $minPlayer, $price, $jeux, $date
+
      */
     public function __construct($INCode = -1,$InName = "")
     {
@@ -21,11 +19,11 @@ class EJeux{
     }
 
     /**
-     * @var string Email du client
+     * @var string Nom
      */
     public $nom;
     /**
-     * @var string Nickname du client
+     * @var string Id
      */
     public $id;
 

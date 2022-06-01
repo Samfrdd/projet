@@ -6,6 +6,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 -->
 
 <?php
+
+// Auteur : Sam Freddi
+// Description : Page connexion
+
 session_start();
 require_once '../db/database.php';
 $erreur = "";

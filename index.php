@@ -102,7 +102,7 @@ if (isset($_POST["leaveTeam"])) {
 
 </head>
 
-<body id="page-top ">
+<body id="page-top">
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">

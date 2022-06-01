@@ -1,23 +1,20 @@
 <?php
 
 /**
- * Classe container client
+ * Classe container invitation
  */
 class EInvitationInfo{
 
     /**
      * ctor 
      *
-     * @param string $InEmail l'email de l'utilisateur
-     * @param string $InNickname Son nickname
-     * $name, $maxPlayer, $minPlayer, $price, $jeux, $date
      */
     public function __construct($INom = "")
     {
         $this->nom = $INom;
     }
     /**
-     * @var string Nom de l'équipe
+     * @var string Nom 
      */
     public $nom;
 }

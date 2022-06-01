@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Classe container client
+ * Classe container participation
  */
 class EParticipant{
 
