@@ -55,6 +55,8 @@ if (isset($_POST["submit"])) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 <!-- Custom Theme files -->
 <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
 <!-- //Custom Theme files -->
@@ -71,7 +73,7 @@ if (isset($_POST["submit"])) {
 				<form action="#" method="post">
 					<input class="text" type="text" name="Pseudo" placeholder="Pseudo" required="">
 					<input class="text w3lpass" type="password" name="password" placeholder="Mot de passe" required="">
-					<input type="submit" name="submit" value="Connexion">
+					<input type="submit" class="btn btn-warning mb-4 text-black" name="submit" value="Connexion">
 				</form>
 				<p>Vous n'avez pas de compte ? <a href="./inscripiton.php"> Créez en un  !</a></p>
 			</div>

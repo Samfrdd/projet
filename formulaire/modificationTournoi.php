@@ -292,7 +292,7 @@ function verifyTournoiExist($name)
 
                     <label class="text-light">Date :</label>
                     <input class="text bg-dark mb-4 text-light center" type="date" value="<?= $tournoi->date ?>" name="date" placeholder="Date du tournoi" required=""></input>
-                    <input type="submit" name="submit" value="Valider"></input>
+                    <input type="submit" class="btn btn-warning mb-4 text-black" name="submit" value="Valider"></input>
                 </form>
                 <p> <a href="../index.php">Retour</a></p>
             </div>
