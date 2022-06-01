@@ -126,10 +126,13 @@ if (isset($_POST["submit"])) {
         }
     </script>
     <!-- Custom Theme files -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+
     <!-- //Custom Theme files -->
     <!-- web font -->
-    <link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+
     <!-- //web font -->
 </head>
 
@@ -141,7 +144,7 @@ if (isset($_POST["submit"])) {
             <div class="agileits-top">
                 <form action="#" method="post">
                     <input class="text" type="text" name="Nom" placeholder="Nom d'équipe" required="">
-                    <input type="submit" name="submit" value="Inscription">
+                    <input type="submit" class="btn btn-warning mb-4 text-black" name="submit" value="Inscription">
                 </form>
                 <p><a href="../index.php"> Retour</a></p>
             </div>
