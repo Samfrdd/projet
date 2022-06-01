@@ -5,6 +5,7 @@
  * @copyright Sam Freddi
  * @version 1.0.0
  */
+$erreurInvit = "";
 
 require_once './function.php';
 session_start();
@@ -28,6 +29,8 @@ if (isset($_POST["submit"])) {
         if ($pseudo != $_SESSION["pseudo"]) {
             addInvitation($pseudo);
         }
+    } else {
+        $erreurInvit = "Ce pseudo n'existe pas";
     }
 }
 
@@ -181,10 +184,15 @@ if (isset($_POST["leaveTeam"])) {
                         displayTeam($team);
                         ?>
                     </div>
-                    
+
                     <form action="#" method="POST">
+                        <?php
+                        if ($erreurInvit != "") {
+                            echo   '<div class="alert alert-danger" role="alert">' . $erreurInvit . '</div>';
+                        }
+                        ?>
                         <input type="text" class="form-control rounded" name="searchPlayer" placeholder="Chercher un joueur">
-                      <input type="submit" class="btn btn-primary mb-4 text-black"  name="submit" value="Invitation">
+                        <input type="submit" class="btn btn-primary mb-4 text-black" name="submit" value="Invitation">
                     </form>
                 </div>
             </section>
