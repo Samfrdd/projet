@@ -8,11 +8,15 @@
 
 require_once './function.php';
 session_start();
-
-tournoiDateExpired();
+$tournoisExpired = getTournoiDateExpired();
+if ($tournoisExpired) {
+    foreach ($tournoisExpired as $key => $id) {
+        deleteParticipant($id);
+    }
+    deleteTournoiDateExpired();
+}
 $allTournoi = getAllTournoi();
 
-tournoiDateExpired();
 if (isset($_POST["submit"])) {
     // Vérification du champs palyer
     if (filter_has_var(INPUT_POST, 'searchPlayer')) {
@@ -31,16 +35,16 @@ if (isset($_POST["invAccept"])) {
     if (filter_has_var(INPUT_POST, 'nomEquipe')) {
         $equipe = filter_input(INPUT_POST, "nomEquipe", FILTER_SANITIZE_STRING);
     }
-    if (addEquipe($equipe, $_SESSION["pseudo"] ) == false) {
+    if (addEquipe($equipe, $_SESSION["pseudo"]) == false) {
         echo "Un probleme est survenue";
-    }else{
-        if(addRoleJoueur($_SESSION["pseudo"]) == false){
+    } else {
+        if (addRoleJoueur($_SESSION["pseudo"]) == false) {
             echo "Un probleme est survenue";
-        }else{
+        } else {
             refuseInvitation($equipe, $_SESSION["pseudo"]);
         }
     }
-   // acceptInvation($equipe, $_SESSION["pseudo"]);
+    // acceptInvation($equipe, $_SESSION["pseudo"]);
 }
 
 if (isset($_POST["invDenied"])) {
@@ -48,7 +52,7 @@ if (isset($_POST["invDenied"])) {
         $equipe = filter_input(INPUT_POST, "nomEquipe", FILTER_SANITIZE_STRING);
     }
     refuseInvitation($equipe, $_SESSION["pseudo"]);
-   // acceptInvation($equipe, $_SESSION["pseudo"]);
+    // acceptInvation($equipe, $_SESSION["pseudo"]);
 }
 
 if (isset($_POST["leaveTeam"])) {
@@ -56,8 +60,7 @@ if (isset($_POST["leaveTeam"])) {
         $idTeam = getIdTeam($_SESSION["pseudo"]);
         updateTeam($idTeam);
         deleteTeam($idTeam);
-    }
-    else {
+    } else {
         leaveTeam($_SESSION["pseudo"]);
     }
 }
@@ -113,7 +116,7 @@ if (isset($_POST["leaveTeam"])) {
                         echo '<div class="icon mr-2" id="bell"> <img src="https://i.imgur.com/AC7dgLA.png" alt=""> </div>
                         <div class="notifications" id="box">';
                         echo '<h2>Notifications - <span>' . count($invitation) . '</span></h2>';
-                        
+
                         foreach ($invitation as $team) {
                             echo '<form id="notif" action="#" method="POST">';
                             echo '<div class="notifications-item"> <img src="./assets/img/equipe.png" alt="img">';
@@ -129,7 +132,7 @@ if (isset($_POST["leaveTeam"])) {
                             echo '</div>  </div> ';
                             echo '</form>';
                         }
-                    
+
                         echo '</div>';
                         echo '<li class="nav-item"><a class="nav-link" href="#">' . $_SESSION["pseudo"] . '</a></li>';
                         echo '<li class="nav-item"><a class="nav-link" href="./deconnexion.php"><img src="./assets/img/deconnexion.png"></a></li>';

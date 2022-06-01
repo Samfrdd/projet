@@ -242,7 +242,35 @@ function verfieTeamRegister($nameTournoi, $pseudo)
     }
 }
 
-function tournoiDateExpired()
+function getTournoiDateExpired(){
+    $sql = "SELECT tournoi.idTournoi FROM `projet`.`tournoi`
+            WHERE `tournoi`.`dateDebut` < CURDATE()";
+    $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    try {
+        $statement->execute();
+        $resultat = $statement->fetchAll();
+    } catch (PDOException $e) {
+        echo $e;
+        return false;
+    }
+    return $resultat;
+}
+
+function deleteParticipant($id)
+{
+	$sql = "DELETE FROM `projet`.`participation`
+    WHERE idTournoi = :id";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":id" => $id));
+	} catch (PDOException $e) {
+		return false;
+	}
+	// Done
+	return true;
+}
+
+function deleteTournoiDateExpired()
 {
     $sql = "DELETE FROM `projet`.`tournoi`
             WHERE `tournoi`.`dateDebut` < CURDATE()";
