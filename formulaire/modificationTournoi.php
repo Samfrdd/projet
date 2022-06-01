@@ -20,7 +20,13 @@ $jeux = "";
 $date = "";
 $nbJoueurEquipe = 0;
 
-
+$erreurNom = "";
+$erreurminPlayer = "";
+$erreurmaxPlayer = "";
+$erreurprice = "";
+$erreurjeux = "";
+$erreurdate = "";
+$erreurnbJoueurEquipe = "";
 
 $id = $_GET["nameTournoi"];
 
@@ -50,8 +56,8 @@ function getTournoi($nomTournoi)
     return $c;
 }
 
-function getIdJeux($nomJeux){
-
+function getIdJeux($nomJeux)
+{
 }
 
 function getJeux()
@@ -112,9 +118,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs quantité
         if (filter_has_var(INPUT_POST, 'maxPlayer')) {
             $maxPlayer = filter_input(INPUT_POST, 'maxPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-            if ($maxPlayer === false || floatval($maxPlayer) == 0)
-                // || floatval($maxPlayer) % 2 != 0
+            if ($maxPlayer === false || floatval($maxPlayer) == 0) {
+                $erreurmaxPlayer = "veuilllez rentrez une valeur valide";
                 $bValid = false;
+            }
         } else {
             $bValid = false;
         }
@@ -123,8 +130,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs quantité
         if (filter_has_var(INPUT_POST, 'minPlayer')) {
             $minPlayer = filter_input(INPUT_POST, 'minPlayer', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-            if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer || floatval($minPlayer) % 2 != 0)
+            if ($minPlayer === false || floatval($minPlayer) == 0 || $minPlayer > $maxPlayer || floatval($minPlayer) % 2 != 0) {
                 $bValid = false;
+                $erreurminPlayer = "veuilllez rentrez une valeur valide";
+            }
         } else {
             $bValid = false;
         }
@@ -132,8 +141,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs quantité
         if (filter_has_var(INPUT_POST, 'nbJoueurEquipe')) {
             $nbJoueurEquipe = filter_input(INPUT_POST, 'nbJoueurEquipe', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-            if ($nbJoueurEquipe === false || floatval($nbJoueurEquipe) == 0 || floatval($nbJoueurEquipe) > 5)
+            if ($nbJoueurEquipe === false || floatval($nbJoueurEquipe) == 0 || floatval($nbJoueurEquipe) > 5) {
                 $bValid = false;
+                $erreurnbJoueurEquipe = "veuilllez rentrez une valeur valide";
+            }
         } else {
             $bValid = false;
         }
@@ -141,8 +152,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs prix
         if (filter_has_var(INPUT_POST, 'Price')) {
             $price = filter_input(INPUT_POST, 'Price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
-            if ($price === false || floatval($price) == 0)
+            if ($price === false || floatval($price) == 0) {
                 $bValid = false;
+                $erreurprice = "Il y'a une erreur sur le prix";
+            }
         } else {
             $bValid = false;
         }
@@ -150,8 +163,10 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs quantité
         if (filter_has_var(INPUT_POST, 'jeux')) {
             $jeux = filter_input(INPUT_POST, 'jeux', FILTER_SANITIZE_STRING);
-            if ($jeux === false || strlen($jeux) == 0)
+            if ($jeux === false || strlen($jeux) == 0) {
                 $bValid = false;
+                $erreurjeux = "il y'a une erreur sur le jeux";
+            }
         } else {
             $bValid = false;
         }
@@ -159,23 +174,27 @@ if (!checkCreateurTournoi($_SESSION["pseudo"], $tournoi->code)) {
         // Vérification du champs quantité
         if (filter_has_var(INPUT_POST, 'date')) {
             $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
-            if ($date === false || $date < date("m.d.y"))
+            if ($date === false || $date < date("m.d.y")) {
                 $bValid = false;
+                $erreurdate = "il y'a une erreur sur la date";
+            }
         } else {
             $bValid = false;
         }
 
         // Est-ce qu'on a rencontré une erreur?
-        if ($bValid && verifyTournoiExist($name) == true) {
+        if (verifyTournoiExist($name,$tournoi->nom) == true) {
             // echo "$name + $minPlayer + $maxPlayer + $price + $jeux + $date" ;
-            if (!modifTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($nbJoueurEquipe), floatval($price), $jeux, $date, $_SESSION["pseudo"], intval($tournoi->code))) {
-                echo "asda";
-            } else {
-                header("Location: ../index.php");
-                exit;
+            if ($bValid) {
+                if (!modifTournoi($name, floatval($maxPlayer), floatval($minPlayer), floatval($nbJoueurEquipe), floatval($price), $jeux, $date, $_SESSION["pseudo"], intval($tournoi->code))) {
+                    echo "asda";
+                } else {
+                    header("Location: ../index.php");
+                    exit;
+                }
             }
         } else {
-            echo 'Ce nom de tournoi existe deja';
+            $erreurNom = "le nom d'équipe que vous avez choisis existe deja";
         }
     }
 }
@@ -196,7 +215,7 @@ function modifTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $j
     WHERE `idTournoi` = :id;";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":id" => $idTournoi,":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":nb" => $nbJoueurEquipe, ":p" => $price, ":j" => $jeux, ":d" => $date, ":c" => $createur));
+        $statement->execute(array(":id" => $idTournoi, ":n" => $name, ":ma" => $maxPlayer, ":mi" => $minPlayer, ":nb" => $nbJoueurEquipe, ":p" => $price, ":j" => $jeux, ":d" => $date, ":c" => $createur));
     } catch (PDOException $e) {
         echo $e;
         return false;
@@ -205,18 +224,17 @@ function modifTournoi($name, $maxPlayer, $minPlayer, $nbJoueurEquipe, $price, $j
     return true;
 }
 
-verifyTournoiExist($name);
-function verifyTournoiExist($name)
+function verifyTournoiExist($name, $tournoi)
 {
     $sql = "SELECT `tournoi`.`Nom` FROM `projet`.`tournoi` Where `tournoi`.`Nom` = :n";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":n"=>$name));
+        $statement->execute(array(":n" => $name));
         $resultat = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
     } catch (PDOException $e) {
         return false;
     }
-    if ($resultat == "" || $resultat["Nom"] == $name) {
+    if ($resultat == "" || $tournoi  == $name) {
         return true;
     } else {
         return false;
@@ -265,21 +283,59 @@ function verifyTournoiExist($name)
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
+                <?php
+                    if ($erreurNom != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurNom . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Nom :</label>
                     <input class="text mb-4" type="text" name="nomTournoi" value="<?= $tournoi->nom ?>" placeholder="Nom" required=""></input>
-
+                    <?php
+                    if ($erreurmaxPlayer != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurminPlayer . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Maximum de joueur :</label>
                     <input class="text mb-4" type="text" name="maxPlayer" value="<?= $tournoi->maxPlayer ?>" placeholder="Nombre de joueur Maximum" required=""></input>
-
+                    <?php
+                    if ($erreurminPlayer != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurminPlayer . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Minimum de joueur :</label>
                     <input class="text mb-4" type="text" name="minPlayer" value="<?= $tournoi->minPlayer ?>" placeholder="Nombre de joueur Minimum" required=""></input>
-
+                    <?php
+                    if ($erreurnbJoueurEquipe != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurnbJoueurEquipe . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Nombre de joueur par équipe :</label>
                     <input class="text mb-4" type="text" name="nbJoueurEquipe" value="<?= $tournoi->nbJoueurEquipe ?>" placeholder="Nombre de joueur par équipe" required=""></input>
-
+                    <?php
+                    if ($erreurprice != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurprice . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Prix :</label>
                     <input class="text mb-4" type="text" name="Price" value="<?= $tournoi->prix ?>" placeholder="Récompence du tournoi en CHF" required=""></input>
                     <!-- <input class="text mb-4" type="text" name="jeux" value="" placeholder="Jeux du tournoi" required=""> -->
+                    <?php
+                    if ($erreurjeux != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurjeux . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Jeux :</label>
                     <select name="jeux" class="mb-4 bg-dark text-light">
                         <?php
@@ -289,7 +345,13 @@ function verifyTournoiExist($name)
                         ?>
                     </select>
                     <br>
-
+                    <?php
+                    if ($erreurdate != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        ' . $erreurdate . '
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Date :</label>
                     <input class="text bg-dark mb-4 text-light center" type="date" value="<?= $tournoi->date ?>" name="date" placeholder="Date du tournoi" required=""></input>
                     <input type="submit" class="btn btn-warning mb-4 text-black" name="submit" value="Valider"></input>

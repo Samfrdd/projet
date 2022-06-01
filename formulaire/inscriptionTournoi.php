@@ -141,8 +141,10 @@ if (isset($_POST["inscription"])) {
 		}
 	</script>
 	<!-- Custom Theme files -->
-	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+
 	<!-- //Custom Theme files -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<!-- web font -->
 	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
 	<!-- //web font -->
@@ -155,11 +157,11 @@ if (isset($_POST["inscription"])) {
 		<div class="main-agileinfo">
 			<div class="agileits-top">
 				<form action="#" method="post">
-					<label for="valider">
+					<label for="valider" class="text-light">
 						<input type="checkbox" name="valider" required>
 						Voulez-vous participer a se tournoi.
 					</label>
-					<input type="submit"  class="btn btn-primary mb-4 text-black" name="inscription" value="Inscription">
+					<input type="submit" class="btn btn-warning mb-4 text-black" name="inscription" value="Inscription">
 				</form>
 			</div>
 		</div>
