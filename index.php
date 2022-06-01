@@ -11,7 +11,7 @@ session_start();
 $tournoisExpired = getTournoiDateExpired();
 if ($tournoisExpired) {
     foreach ($tournoisExpired as $key => $id) {
-        deleteParticipant($id);
+        deleteParticipant($id["0"]);
     }
     deleteTournoiDateExpired();
 }
