@@ -20,6 +20,8 @@ $jeux = "";
 $date = "";
 $nbJoueurEquipe = 0;
 
+$erreurNom = "";
+
 
 if (isset($_POST['submit'])) {
     $bValid = true;
@@ -98,7 +100,7 @@ if (isset($_POST['submit'])) {
                     exit;
                 }
             } else {
-                echo 'Ce nom de tournoi existe deja';
+                $erreurNom = "le nom d'équipe que vous avez choisis existe deja";
             }
         }
 
@@ -204,6 +206,13 @@ function verifyTournoiExist($name)
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
+                    <?php
+                     if ($erreurNom != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        '. $erreurNom .'
+                        </div>';
+                    }
+                    ?>
                     <label class="text-light">Nom :</label>
                     <input class="text mb-4" type="text" name="nomTournoi" value="<?= $name ?>" placeholder="Nom" required=""></input>
                     

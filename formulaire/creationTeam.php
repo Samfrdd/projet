@@ -7,6 +7,8 @@ Description : Formulaire de creation d'une equipe
 session_start();
 require_once '../db/database.php';
 
+$erreur = "";
+
 function verifieTeamExist($Nom)
 {
     $sql = "SELECT `equipe`.`Nom` FROM `projet`.`equipe` Where `equipe`.`Nom` = :n";
@@ -62,7 +64,7 @@ function addIdEquipe($Nom)
             WHERE `Pseudo` = :p";
     $statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     try {
-        $statement->execute(array(":n" => $Nom,":p" => $_SESSION["pseudo"]));
+        $statement->execute(array(":n" => $Nom, ":p" => $_SESSION["pseudo"]));
     } catch (PDOException $e) {
         echo $e;
         return false;
@@ -82,11 +84,11 @@ function verifieRole($Nom)
         echo $e;
         return false;
     }
-     if ($resultat["Role"] == "") {
-         return true;
-     } else {
-         return false;
-     }
+    if ($resultat["Role"] == "") {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 if (isset($_POST["submit"])) {
@@ -94,16 +96,16 @@ if (isset($_POST["submit"])) {
     if (filter_has_var(INPUT_POST, 'Nom')) {
         $Nom = filter_input(INPUT_POST, "Nom", FILTER_SANITIZE_STRING);
     }
-    if (verifieRole($_SESSION["pseudo"]) == true ) {
-        echo "salut";
+    if (verifieRole($_SESSION["pseudo"]) == true) {
         if (verifieTeamExist($Nom) == true) {
-            echo "salut";
             addTeam($Nom);
-            echo($_SESSION["pseudo"]);
+            echo ($_SESSION["pseudo"]);
             addRole($_SESSION["pseudo"]);
             addIdEquipe($Nom);
             header("Location: ../index.php");
             exit;
+        } else {
+            $erreur = "le nom d'équipe que vous avez choisis existe deja";
         }
     }
 }
@@ -143,6 +145,13 @@ if (isset($_POST["submit"])) {
         <div class="main-agileinfo">
             <div class="agileits-top">
                 <form action="#" method="post">
+                    <?php
+                    if ($erreur != "") {
+                        echo   '<div class="alert alert-danger" role="alert">
+                        '. $erreur .'
+                        </div>';
+                    }
+                    ?>
                     <input class="text" type="text" name="Nom" placeholder="Nom d'équipe" required="">
                     <input type="submit" class="btn btn-warning mb-4 text-black" name="submit" value="Inscription">
                 </form>
