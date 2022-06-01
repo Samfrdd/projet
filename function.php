@@ -486,3 +486,29 @@ function getIdTeam($utilisateur){
     }
     return $resultat["idEquipe"];
 }
+
+function deleteInvitation($idEquipe){
+    $sql = "DELETE FROM `projet`.`invitation`
+    WHERE idEquipe = :id";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":id" => $idEquipe));
+	} catch (PDOException $e) {
+		return false;
+	}
+	// Done
+	return true;
+}
+
+function deleteParticipation($idEquipe){
+    $sql = "DELETE FROM `projet`.`participation`
+    WHERE idEquipe = :id";
+	$statement = EDatabase::prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	try {
+		$statement->execute(array(":id" => $idEquipe));
+	} catch (PDOException $e) {
+		return false;
+	}
+	// Done
+	return true;
+}

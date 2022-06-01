@@ -58,6 +58,8 @@ if (isset($_POST["invDenied"])) {
 if (isset($_POST["leaveTeam"])) {
     if (verifieIsCaptaine($_SESSION["pseudo"])) {
         $idTeam = getIdTeam($_SESSION["pseudo"]);
+        deleteInvitation($idTeam);
+        deleteParticipation($idTeam);
         updateTeam($idTeam);
         deleteTeam($idTeam);
     } else {
